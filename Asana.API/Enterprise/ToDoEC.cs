@@ -12,7 +12,8 @@ namespace Asana.API.Enterprise
 
         public IEnumerable<ToDo> GetToDos()
         {
-            return new MsSqlContext().ToDos.Take(100);
+            //return new MsSqlContext().ToDos.Take(100);
+            return FakeDatabase.Current.ToDos.Take(100);
         }
 
         public ToDo? GetById(int id)

@@ -11,10 +11,10 @@ namespace Asana.API.Database
 
         public MsSqlContext()
         {
-            _connectionString = $"Server=CMILLS;Database=ASANA;Trusted_Connection=True;TrustServerCertificate=True";
+            _connectionString = $"Server=localhost;Database=ASANA;Trusted_Connection=True;TrustServerCertificate=True";
         }
 
-        private List<ToDo> _toDos;
+        private List<ToDo>? _toDos;
         public List<ToDo> ToDos
         {
             get
