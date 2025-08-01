@@ -14,8 +14,9 @@ namespace Asana.API.Database
         }
 
         private List<Project> projects = new List<Project>();
-        //public List<Project> Projects { get { return projects; } }
-        private FakeDatabase() {
+
+        private FakeDatabase()
+        {
 
             toDos = new List<ToDo>
                 {
@@ -27,60 +28,67 @@ namespace Asana.API.Database
                 };
 
             projects = new List<Project>()
-{
-    new Project
-    {
-        Id = 1,
-        Name = "Project 1",
-        Description = "First project description",
-        CompletePercent = 75.0,
-        ToDosListP = toDos.Where(t => t.ProjectId == 1).ToList()
-    },
-    new Project
-    {
-        Id = 2,
-        Name = "Project 2",
-        Description = "Second project description",
-        CompletePercent = 40.0,
-        ToDosListP= toDos.Where(t => t.ProjectId == 2).ToList()
-    },
-    new Project
-    {
-        Id = 3,
-        Name = "Project 3",
-        Description = "Third project description",
-        CompletePercent = 100.0,
-        ToDosListP= toDos.Where(t => t.ProjectId == 3).ToList()
-    },
-    new Project
-    {
-        Id = 4,
-        Name = "Project 4",
-        Description = "Fourth project description",
-        CompletePercent = 0.0,
-        ToDosListP = new List<ToDo>()
-    },
-    new Project
-    {
-        Id = 5,
-        Name = "Project 5",
-        Description = "Fifth project description",
-        CompletePercent = 0.0,
-        ToDosListP = new List<ToDo>()
-    },
-    new Project
-    {
-        Id = 6,
-        Name = "Project 6",
-        Description = "Sixth project description",
-        CompletePercent = 0.0,
-        ToDosListP = new List<ToDo>()
-    },
-};
+            {
+                new Project
+                {
+                    Id = 1,
+                    Name = "Project 1",
+                    Description = "First project description",
+                    CompletePercent = 75.0,
+                    ToDosListP = toDos.Where(t => t.ProjectId == 1).ToList()
+                },
+                new Project
+                {
+                    Id = 2,
+                    Name = "Project 2",
+                    Description = "Second project description",
+                    CompletePercent = 40.0,
+                    ToDosListP= toDos.Where(t => t.ProjectId == 2).ToList()
+                },
+                new Project
+                {
+                    Id = 3,
+                    Name = "Project 3",
+                    Description = "Third project description",
+                    CompletePercent = 100.0,
+                    ToDosListP= toDos.Where(t => t.ProjectId == 3).ToList()
+                },
+                new Project
+                {
+                    Id = 4,
+                    Name = "Project 4",
+                    Description = "Fourth project description",
+                    CompletePercent = 0.0,
+                    ToDosListP = new List<ToDo>()
+                },
+                new Project
+                {
+                    Id = 5,
+                    Name = "Project 5",
+                    Description = "Fifth project description",
+                    CompletePercent = 0.0,
+                    ToDosListP = new List<ToDo>()
+                },
+                new Project
+                {
+                    Id = 6,
+                    Name = "Project 6",
+                    Description = "Sixth project description",
+                    CompletePercent = 0.0,
+                    ToDosListP = new List<ToDo>()
+                },
+            };
 
+            // Initialize nextKeys properly based on existing data
             nextKeys = new Dictionary<DataType, int>();
-            nextKeys.Add(DataType.ToDo, 5);
-            nextKeys.Add(DataType.Project, 3);
+            nextKeys.Add(DataType.ToDo, GetNextAvailableId(toDos.Select(t => t.Id)));
+            nextKeys.Add(DataType.Project, GetNextAvailableId(projects.Select(p => p.Id)));
+        }
+
+        // Helper method to calculate next available ID
+        private int GetNextAvailableId(IEnumerable<int> existingIds)
+        {
+            return existingIds.Any() ? existingIds.Max() + 1 : 1;
         }
 
         public List<Project>? GetProjects(bool Expand = false)
@@ -98,9 +106,10 @@ namespace Asana.API.Database
             }
             return projects;
         }
+
         public ToDo? AddOrUpdateToDo(ToDo? toDoToAdd)
         {
-            if(toDoToAdd == null)
+            if (toDoToAdd == null)
             {
                 return toDoToAdd;
             }
@@ -124,7 +133,7 @@ namespace Asana.API.Database
 
         public ToDo? DeleteToDo(ToDo? toDoToDelete)
         {
-            if(toDoToDelete == null)
+            if (toDoToDelete == null)
             {
                 return null;
             }
@@ -135,24 +144,24 @@ namespace Asana.API.Database
 
         public Project? AddOrUpdateProject(Project? projectToAdd)
         {
-            if (projectToAdd == null)
-            {
-                return projectToAdd;
-            }
+            if (projectToAdd == null) return projectToAdd;
 
-            if (projectToAdd.Id <= 0)
+            lock (instanceLock) // Add this for thread safety
             {
-                projectToAdd.Id = nextKeys[DataType.Project]++;
-                projects.Add(projectToAdd);
-            }
-            else
-            {
-                var oldProject = projects.FirstOrDefault(p => p.Id == projectToAdd.Id); // Fixed: was toDos
-                if (oldProject != null)
+                if (projectToAdd.Id <= 0)
                 {
-                    projects.Remove(oldProject); // Fixed: was toDos
+                    projectToAdd.Id = nextKeys[DataType.Project]++;
+                    projects.Add(projectToAdd);
                 }
-                projects.Add(projectToAdd);
+                else
+                {
+                    var oldProject = projects.FirstOrDefault(p => p.Id == projectToAdd.Id);
+                    if (oldProject != null)
+                    {
+                        projects.Remove(oldProject);
+                    }
+                    projects.Add(projectToAdd);
+                }
             }
             return projectToAdd;
         }
@@ -184,32 +193,22 @@ namespace Asana.API.Database
         }
 
         private Dictionary<DataType, int> nextKeys;
-        /*public static int NextToDoKey
+
+        // Optional: Methods to reset/reinitialize the database for testing
+        public static void Reset()
         {
-            get
+            lock (instanceLock)
             {
-                if (toDos.Any())
-                {
-                    return toDos.Select(t => t.Id).Max() + 1;
-                }
-                return 1;
+                instance = null;
             }
         }
 
-        public static int NextProjectKey
+        // Debug method to check current next keys
+        public void LogNextKeys()
         {
-            get
-            {
-                if (projects.Any())
-                {
-                    return projects.Select(t => t.Id).Max() + 1;
-                }
-                return 1;
-            }
-        }*/
-
-
-
+            Console.WriteLine($"Next ToDo ID: {nextKeys[DataType.ToDo]}");
+            Console.WriteLine($"Next Project ID: {nextKeys[DataType.Project]}");
+        }
     }
 
     public enum DataType
