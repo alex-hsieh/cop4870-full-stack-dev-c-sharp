@@ -60,6 +60,7 @@ namespace Asana.Maui.ViewModels
             }
         }
 
+
         public void AddOrUpdateToDo()
         {
             ToDoServiceProxy.Current.AddOrUpdate(Model);
@@ -91,6 +92,17 @@ namespace Asana.Maui.ViewModels
             }
         }
 
+        public DateTime? DueDate
+        {
+            get => Model?.DueDate;
+            set
+            {
+                if (Model != null && Model.DueDate != value)
+                {
+                    Model.DueDate = value;
+                }
+            }
+        }
 
     }
 }
