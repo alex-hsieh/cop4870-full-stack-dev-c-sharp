@@ -2,30 +2,35 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Asana.Maui.Views.ProjectsView"
-             Title="ProjectsView">
+             Title="ProjectsView, BABY">
     <VerticalStackLayout>
-        <Grid>
-            <ListView
-                ItemsSource="{Binding Projects}"
-                SelectedItem="{Binding SelectedProject}"
-                >
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="10*"/>
-                                </Grid.ColumnDefinitions>
-                                <Label Grid.Column="0" Text="{Binding Model.Id}"/>
-                                <Label FontAttributes="Bold" TextColor="Green" Grid.Column="1" Text="{Binding Model.Name}"/>
-
+        <ListView HeightRequest="400"
+            ItemsSource="{Binding Projects}"
+            SelectedItem="{Binding SelectedProject}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <VerticalStackLayout Padding="10" Spacing="5">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Label Text="ID:" FontAttributes="Bold"/>
+                                <Label Text="{Binding Model.Id}" Grid.Column="1"/>
+                                <Label Text="{Binding CompletionPercentage, StringFormat='Completed: {0:F1}%'}" Grid.Column="2" TextColor="Green"/>
                             </Grid>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Grid>
+                            <Label Text="{Binding Model.Name}" FontAttributes="Bold" FontSize="Medium"/>
+                            <Label Text="{Binding Description}" FontAttributes="Italic" FontSize="Small"/>
+                            <Label Text="ToDos:" FontAttributes="Bold" Margin="0,5,0,0"/>
+                            <CollectionView ItemsSource="{Binding ToDoNames}" Margin="10,0,0,0">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Label Text="{Binding .}" FontSize="Small"/>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
         <Button Text="Add Project" Clicked="AddClicked"/>
         <Button Text="Edit Project" Clicked="EditClicked"/>
         <Button Text="Delete Project" Clicked="DeleteClicked"/>

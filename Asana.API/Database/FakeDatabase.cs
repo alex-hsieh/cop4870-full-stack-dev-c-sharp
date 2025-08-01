@@ -27,14 +27,56 @@ namespace Asana.API.Database
                 };
 
             projects = new List<Project>()
-            {
-                new Project{Id = 1, Name = "Project 1"},
-                new Project{Id = 2, Name = "Project 2"},
-                new Project{ Id = 3, Name = "Project 3" },
-                new Project{Id = 4, Name = "Project 4"},
-                new Project{Id = 5, Name = "Project 5"},
-                new Project{ Id = 6, Name = "Project 6" },
-            };
+{
+    new Project
+    {
+        Id = 1,
+        Name = "Project 1",
+        Description = "First project description",
+        CompletePercent = 75.0,
+        ToDos = toDos.Where(t => t.ProjectId == 1).ToList()
+    },
+    new Project
+    {
+        Id = 2,
+        Name = "Project 2",
+        Description = "Second project description",
+        CompletePercent = 40.0,
+        ToDos = toDos.Where(t => t.ProjectId == 2).ToList()
+    },
+    new Project
+    {
+        Id = 3,
+        Name = "Project 3",
+        Description = "Third project description",
+        CompletePercent = 100.0,
+        ToDos = toDos.Where(t => t.ProjectId == 3).ToList()
+    },
+    new Project
+    {
+        Id = 4,
+        Name = "Project 4",
+        Description = "Fourth project description",
+        CompletePercent = 0.0,
+        ToDos = new List<ToDo>()
+    },
+    new Project
+    {
+        Id = 5,
+        Name = "Project 5",
+        Description = "Fifth project description",
+        CompletePercent = 0.0,
+        ToDos = new List<ToDo>()
+    },
+    new Project
+    {
+        Id = 6,
+        Name = "Project 6",
+        Description = "Sixth project description",
+        CompletePercent = 0.0,
+        ToDos = new List<ToDo>()
+    },
+};
 
             nextKeys = new Dictionary<DataType, int>();
             nextKeys.Add(DataType.ToDo, 5);

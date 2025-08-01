@@ -10,7 +10,8 @@ namespace Asana.Library.Models
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-
-        public List<ToDo>? ToDoList { get; set; }
+        public string? Description { get; set; }
+        public double CompletePercent { get; set; }
+        public List<ToDo>? ToDos { get; set; }
     }
 }
