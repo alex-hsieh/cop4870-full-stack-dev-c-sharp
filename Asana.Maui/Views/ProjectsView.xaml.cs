@@ -17,7 +17,7 @@ public partial class ProjectsView : ContentPage
 
     private void AddClicked(object sender, EventArgs e)
     {
-
+        
     }
 
     private void EditClicked(object sender, EventArgs e)

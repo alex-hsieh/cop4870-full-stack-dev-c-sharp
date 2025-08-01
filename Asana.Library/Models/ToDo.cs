@@ -22,6 +22,8 @@ namespace Asana.Library.Models
 
         public int Id { get; set; }
 
+        public DateTime? DueDate { get; set; }
+
         public override string ToString()
         {
             return $"[{Id}] {Name} - {Description}";

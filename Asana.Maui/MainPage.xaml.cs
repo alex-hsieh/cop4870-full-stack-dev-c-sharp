@@ -45,7 +45,7 @@ namespace Asana.Maui
 
         private void ProjectClicked(object sender, EventArgs e)
         {
-            Shell.Current.GoToAsync($"//ProjectPage");
+            Shell.Current.GoToAsync($"//ProjectsdasdPage");
         }
 
         private void SearchClicked(object sender, EventArgs e)

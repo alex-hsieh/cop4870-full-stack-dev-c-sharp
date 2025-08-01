@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Asana.Maui.Views.ToDoDetailView"
-             Title="ToDoDetailView"
+             x:Class="Asana.Maui.Views.ProjectDetailView"
+             Title="ProjectDetailView"
              NavigatedFrom="ContentPage_NavigatedFrom"
              NavigatedTo="ContentPage_NavigatedTo">
     <VerticalStackLayout>
@@ -15,7 +15,7 @@
             </Grid.ColumnDefinitions>
             <Label Text="Id: " Grid.Column="0"/>
             <Entry Text="{Binding Model.Id}" Grid.Column="1" IsReadOnly="True"/>
-            <Label Text="Name: " Grid.Column="2"/>
+            <Label Text="Project Name: " Grid.Column="2"/>
             <Entry Text="{Binding Model.Name}" Grid.Column="3"/>
         </Grid>
         <Grid>
@@ -27,7 +27,6 @@
 
             <CheckBox IsChecked="{Binding Model.IsCompleted}" Grid.Column="0"/>
             <Label Text="Priority:" Grid.Column="1"/>
-            <!--<Entry Text="{Binding PriorityDisplay}" Grid.Column="2"/>-->
             <Picker ItemsSource="{Binding Priorities}"
                     SelectedItem="{Binding SelectedPriority}" Grid.Column="2"
                     />
@@ -40,15 +39,6 @@
             <Label Text="Description: " Grid.Column="0"/>
             <Entry Text="{Binding Model.Description}" Grid.Column="1"/>
         </Grid>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="3*"/>
-            </Grid.ColumnDefinitions>
-            <Label Text="Due Date:" Grid.Column="0"/>
-            <DatePicker Date="{Binding DueDate}" Grid.Column="1"/>
-        </Grid>
-
         <Button Text="Ok" Clicked="OkClicked"/>
         <Button Text="Cancel" Clicked="CancelClicked"/>
     </VerticalStackLayout>
