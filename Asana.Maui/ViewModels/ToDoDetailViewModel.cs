@@ -1,42 +1,76 @@
-﻿using Asana.Library.Models;
-using Asana.Library.Services;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using Asana.Library.Models;
+using Asana.Library.Services;
 
 namespace Asana.Maui.ViewModels
 {
     public class ToDoDetailViewModel
     {
-        public ToDoDetailViewModel() {
+        public ToDoDetailViewModel()
+        {
             Model = new ToDo();
-
             DeleteCommand = new Command(DoDelete);
+            LoadProjects();
         }
 
         public ToDoDetailViewModel(int id)
         {
             Model = ToDoServiceProxy.Current.GetById(id) ?? new ToDo();
-
             DeleteCommand = new Command(DoDelete);
+            LoadProjects();
         }
 
         public ToDoDetailViewModel(ToDo? model)
         {
             Model = model ?? new ToDo();
             DeleteCommand = new Command(DoDelete);
+            LoadProjects();
         }
 
-        public void DoDelete() {
+        private void LoadProjects()
+        {
+            AvailableProjects = ProjectServiceProxy.Current.Projects.ToList();
+        }
 
+        public void DoDelete()
+        {
             ToDoServiceProxy.Current.DeleteToDo(Model?.Id ?? 0);
         }
 
-        public ToDo? Model { get ; set; }
+        public ToDo? Model { get; set; }
         public ICommand? DeleteCommand { get; set; }
+
+        // Add project support
+        public List<Project> AvailableProjects { get; private set; } = new List<Project>();
+
+        public Project? SelectedProject
+        {
+            get
+            {
+                if (Model?.ProjectId == null) return null;
+                return AvailableProjects.FirstOrDefault(p => p.Id == Model.ProjectId);
+            }
+            set
+            {
+                if (Model != null)
+                {
+                    Model.ProjectId = value?.Id; // Aquí se asigna el ProjectId al ToDo
+                }
+            }
+        }
+
+        // Método simple para obtener el nombre del proyecto
+        public string ProjectName
+        {
+            get
+            {
+                if (Model?.ProjectId == null) return "No Project";
+                var project = AvailableProjects.FirstOrDefault(p => p.Id == Model.ProjectId);
+                return project?.Name ?? "Unknown / Unassigned Project";
+            }
+        }
 
         public List<int> Priorities
         {
@@ -46,7 +80,8 @@ namespace Asana.Maui.ViewModels
             }
         }
 
-        public int SelectedPriority { 
+        public int SelectedPriority
+        {
             get
             {
                 return Model?.Priority ?? 4;
@@ -60,21 +95,11 @@ namespace Asana.Maui.ViewModels
             }
         }
 
-
-        public void AddOrUpdateToDo()
-        {
-            ToDoServiceProxy.Current.AddOrUpdate(Model);
-        }
-
-        //This is option 1 to fix the UX issue with Priority
         public string PriorityDisplay
         {
             set
             {
-                if(Model == null)
-                {
-                    return;
-                }
+                if (Model == null) return;
 
                 if (!int.TryParse(value, out int p))
                 {
@@ -85,7 +110,6 @@ namespace Asana.Maui.ViewModels
                     Model.Priority = p;
                 }
             }
-
             get
             {
                 return Model?.Priority?.ToString() ?? string.Empty;
@@ -104,5 +128,9 @@ namespace Asana.Maui.ViewModels
             }
         }
 
+        public void AddOrUpdateToDo()
+        {
+            ToDoServiceProxy.Current.AddOrUpdate(Model);
+        }
     }
 }
