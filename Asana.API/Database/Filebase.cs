@@ -94,10 +94,17 @@ namespace Api.ToDoApplication.Persistence
         }
 
 
-        public bool Delete(string type, string id)
+        public bool Delete(ToDo toDo)
         {
-            //TODO: refer to AddOrUpdate for an idea of how you can implement this.
-            return true;
+            string path = $"{_toDoRoot}\\{toDo.Id}.json";
+
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+                return true;
+            }
+
+            return false;
         }
     }
 
