@@ -4,11 +4,21 @@ namespace Asana.Maui.Views;
 
 public partial class ProjectsView : ContentPage
 {
-	public ProjectsView()
-	{
-		InitializeComponent();
-        BindingContext = new ProjectsPageViewModel();
-	}
+    private ProjectsPageViewModel _viewModel;
+
+    public ProjectsView()
+    {
+        InitializeComponent();
+        _viewModel = new ProjectsPageViewModel();
+        BindingContext = _viewModel;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        // Refresh projects when page appears (e.g., after adding/editing a project)
+        _viewModel.RefreshProjects();
+    }
 
     private void CancelClicked(object sender, EventArgs e)
     {
@@ -22,8 +32,7 @@ public partial class ProjectsView : ContentPage
 
     private void EditClicked(object sender, EventArgs e)
     {
-        var vm = BindingContext as ProjectsPageViewModel;
-        var selectedId = vm?.SelectedProjectId ?? 0;
+        var selectedId = _viewModel.SelectedProjectId;
         if (selectedId > 0)
         {
             Shell.Current.GoToAsync($"//ProjectDetails?ProjectId={selectedId}");
@@ -32,6 +41,6 @@ public partial class ProjectsView : ContentPage
 
     private void DeleteClicked(object sender, EventArgs e)
     {
-
+        _viewModel.DeleteProject();
     }
 }

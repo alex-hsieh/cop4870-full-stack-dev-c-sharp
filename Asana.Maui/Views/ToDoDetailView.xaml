@@ -21,16 +21,23 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
+                <ColumnDefinition Width="1*"/>
                 <ColumnDefinition/>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-            <CheckBox IsChecked="{Binding Model.IsCompleted}" Grid.Column="0"/>
-            <Label Text="Priority:" Grid.Column="1"/>
-            <!--<Entry Text="{Binding PriorityDisplay}" Grid.Column="2"/>-->
+            <!-- Row 0: Labels -->
+            <Label Text="Completed?:" Grid.Row="0" Grid.Column="0"/>
+            <Label Text="Priority:" Grid.Row="0" Grid.Column="2"/>
+
+            <!-- Row 1: Controls -->
+            <CheckBox IsChecked="{Binding Model.IsCompleted}" Grid.Row="1" Grid.Column="0"/>
             <Picker ItemsSource="{Binding Priorities}"
-                    SelectedItem="{Binding SelectedPriority}" Grid.Column="2"
-                    />
+            SelectedItem="{Binding SelectedPriority}" Grid.Row="1" Grid.Column="2"/>
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -49,7 +56,7 @@
             <DatePicker Date="{Binding DueDate}" Grid.Column="1"/>
         </Grid>
 
-        <Button Text="Ok" Clicked="OkClicked"/>
-        <Button Text="Cancel" Clicked="CancelClicked"/>
+        <Button Text="Ok" Clicked="OkClicked" BackgroundColor="Beige"/>
+        <Button Text="Cancel" Clicked="CancelClicked" BackgroundColor="Red"/>
     </VerticalStackLayout>
 </ContentPage>

@@ -26,27 +26,20 @@ namespace Asana.Maui.ViewModels
             Model = model;
         }
 
+        // Properties needed for the UI binding
+        public double CompletionPercentage => Model?.CompletePercent ?? 0.0;
+
+        public string Description => Model?.Description ?? string.Empty;
+
+        public List<string> ToDoNames => Model?.ToDosListP?.Select(t => t.Name ?? "Unnamed Task").ToList() ?? new List<string>();
+
         public void AddOrUpdateProject()
         {
             if (Model == null)
                 return;
 
-            var service = ProjectServiceProxy.Current;
-            var existing = service.Projects.FirstOrDefault(p => p.Id == Model.Id);
-            if (existing != null)
-            {
-                // Update existing project
-                existing.Name = Model.Name;
-                existing.Description = Model.Description;
-                existing.CompletePercent = Model.CompletePercent;
-                existing.ToDosListP = Model.ToDosListP;
-                // Add other property updates as needed
-            }
-            else
-            {
-                // Add new project
-                service.Projects.Add(Model);
-            }
+            // Use the service proxy to handle API calls and local list updates
+            ProjectServiceProxy.Current.AddOrUpdate(Model);
         }
     }
 
@@ -59,15 +52,26 @@ namespace Asana.Maui.ViewModels
 
         public ProjectDetailsPageViewModel()
         {
-            Projects = new ObservableCollection<ProjectDetailViewModel>(
-                ProjectServiceProxy.Current.Projects.Select(p => new ProjectDetailViewModel(p)));
+            RefreshProjects();
         }
 
         public void RefreshProjects()
         {
+            // Refresh data from server first
+            ProjectServiceProxy.Current.Refresh();
+
             Projects = new ObservableCollection<ProjectDetailViewModel>(
                 ProjectServiceProxy.Current.Projects.Select(p => new ProjectDetailViewModel(p)));
             NotifyPropertyChanged(nameof(Projects));
+        }
+
+        public void DeleteProject()
+        {
+            if (SelectedProject?.Model?.Id != null && SelectedProject.Model.Id > 0)
+            {
+                ProjectServiceProxy.Current.DeleteProject(SelectedProject.Model.Id);
+                RefreshProjects(); // Refresh the list after deletion
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
