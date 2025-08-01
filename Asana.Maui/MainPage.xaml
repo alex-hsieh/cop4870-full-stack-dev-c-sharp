@@ -48,6 +48,8 @@
                                             <ColumnDefinition/>
                                             <ColumnDefinition Width="10*"/>
                                             <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
                                         <CheckBox IsChecked="{Binding Model.IsCompleted}" Grid.Column="0"/>
 
@@ -56,15 +58,17 @@
                                                 <RowDefinition/>
                                                 <RowDefinition/>
                                                 <RowDefinition/>
+                                                <RowDefinition/>
                                             </Grid.RowDefinitions>
                                             <Label TextColor="Red" Grid.Row="0" Text="{Binding Model.Name}"/>
                                             <Label Grid.Row="1" Text="{Binding Model.Description}"/>
-                                            <Label Grid.Row="2" Text="{Binding ProjectName}" 
-                                                   FontSize="Small" TextColor="Blue" 
+                                            <Label Grid.Row="2" Text=" Linked to:" FontAttributes="Italic"/>
+                                            <Label Grid.Row="4" Grid.Column="2"  Text="{Binding ProjectName}"
+                                                   FontSize="Micro" TextColor="Coral" 
                                                    IsVisible="{Binding Model.ProjectId}"/>
                                         </Grid>
 
-                                        <Button Grid.Column="2" Text="Delete" Clicked="InLineDeleteClicked" Command="{Binding DeleteCommand}"/>
+                                        <Button Grid.Column="4" Text="Delete" Clicked="InLineDeleteClicked" Command="{Binding DeleteCommand}"/>
                                     </Grid>
                                 </ViewCell>
                             </DataTemplate>
