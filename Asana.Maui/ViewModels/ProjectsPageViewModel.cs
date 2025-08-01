@@ -13,6 +13,7 @@ namespace Asana.Maui.ViewModels
         public List<ProjectViewModel> Projects { get; set; }
 
         public ProjectViewModel? SelectedProject {get; set;}
+        public int SelectedProjectId => SelectedProject?.Model?.Id ?? 0;
 
         public ProjectsPageViewModel()
         {

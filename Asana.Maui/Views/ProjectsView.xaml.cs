@@ -17,12 +17,17 @@ public partial class ProjectsView : ContentPage
 
     private void AddClicked(object sender, EventArgs e)
     {
-        
+        Shell.Current.GoToAsync("//ProjectDetails");
     }
 
     private void EditClicked(object sender, EventArgs e)
     {
-
+        var vm = BindingContext as ProjectsPageViewModel;
+        var selectedId = vm?.SelectedProjectId ?? 0;
+        if (selectedId > 0)
+        {
+            Shell.Current.GoToAsync($"//ProjectDetails?ProjectId={selectedId}");
+        }
     }
 
     private void DeleteClicked(object sender, EventArgs e)

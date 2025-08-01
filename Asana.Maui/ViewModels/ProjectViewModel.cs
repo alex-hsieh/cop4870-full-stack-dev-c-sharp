@@ -20,13 +20,13 @@ namespace Asana.Maui.ViewModels
         {
             get
             {
-                if (Model == null || Model.ToDos == null)
+                if (Model == null || Model.ToDosListP == null)
                 {
                     return new ObservableCollection<ToDoDetailViewModel>();
                 }
 
                 return new ObservableCollection<ToDoDetailViewModel>(
-                    Model.ToDos.Select(t => new ToDoDetailViewModel(t)));
+                    Model.ToDosListP.Select(t => new ToDoDetailViewModel(t)));
             }
         }
         public ICommand? ToggleToDoVisibility { get; set; }
@@ -89,19 +89,38 @@ namespace Asana.Maui.ViewModels
 
         public int ToDoCount
         {
-            get => Model?.ToDos?.Count ?? 0;
+            get => Model?.ToDosListP?.Count ?? 0;
         }
 
         public double CompletionPercentage
         {
             get
             {
-                if (Model?.ToDos == null || Model.ToDos.Count == 0)
+                if (Model?.ToDosListP == null || Model.ToDosListP.Count == 0)
                     return 0;
-                int completed = Model.ToDos.Count(t => t.IsCompleted == true);
-                return (double)completed / Model.ToDos.Count * 100;
+                int completed = Model.ToDosListP.Count(t => t.IsCompleted == true);
+                return (double)completed / Model.ToDosListP.Count * 100;
             }
         }
-        public IEnumerable<string> ToDoNames => Model?.ToDos?.Select(t => t.Name ?? string.Empty) ?? Enumerable.Empty<string>();
+        public IEnumerable<string> ToDoNames => Model?.ToDosListP?.Select(t => t.Name ?? string.Empty) ?? Enumerable.Empty<string>();
+
+        public ObservableCollection<ProjectViewModel> Projects { get; set; }
+
+        private ProjectViewModel? selectedProject;
+        public ProjectViewModel? SelectedProject
+        {
+            get => selectedProject;
+            set
+            {
+                if (selectedProject != value)
+                {
+                    selectedProject = value;
+                    NotifyPropertyChanged();
+                    NotifyPropertyChanged(nameof(SelectedProjectId));
+                }
+            }
+        }
+
+        public int SelectedProjectId => SelectedProject?.Model?.Id ?? 0;
     }
 }

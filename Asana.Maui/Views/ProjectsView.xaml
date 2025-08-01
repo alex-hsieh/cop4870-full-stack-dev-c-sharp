@@ -14,7 +14,7 @@
                             <Grid ColumnDefinitions="Auto,*,Auto">
                                 <Label Text="ID:" FontAttributes="Bold"/>
                                 <Label Text="{Binding Model.Id}" Grid.Column="1"/>
-                                <Label Text="{Binding CompletionPercentage, StringFormat='Completed: {0:F1}%'}" Grid.Column="2" TextColor="Green"/>
+                                <Label Text="{Binding CompletionPercentage, StringFormat='BLASTED: {0:F1}%'}" Grid.Column="2" TextColor="Green"/>
                             </Grid>
                             <Label Text="{Binding Model.Name}" FontAttributes="Bold" FontSize="Medium"/>
                             <Label Text="{Binding Description}" FontAttributes="Italic" FontSize="Small"/>

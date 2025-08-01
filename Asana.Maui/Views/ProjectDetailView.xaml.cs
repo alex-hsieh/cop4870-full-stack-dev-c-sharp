@@ -3,7 +3,7 @@ using Asana.Maui.ViewModels;
 
 namespace Asana.Maui.Views;
 
-[QueryProperty(nameof(ProjectId), "toDoId")]
+[QueryProperty(nameof(ProjectId), "ProjectId")]
 public partial class ProjectDetailView : ContentPage
 {
     public ProjectDetailView()
@@ -14,7 +14,7 @@ public partial class ProjectDetailView : ContentPage
     public int ProjectId { get; set; }
     private void CancelClicked(object sender, EventArgs e)
     {
-        Shell.Current.GoToAsync("//MainPage");
+        Shell.Current.GoToAsync("//ProjectsPage");
     }
 
     private void OkClicked(object sender, EventArgs e)
