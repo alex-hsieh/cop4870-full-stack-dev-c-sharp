@@ -20,15 +20,26 @@ namespace Asana.Maui.ViewModels
 
         public ProjectsPageViewModel()
         {
-            Projects = new ObservableCollection<ProjectDetailViewModel>(
-                ProjectServiceProxy.Current.Projects.Select(p => new ProjectDetailViewModel(p)));
+            RefreshProjects();
         }
 
         public void RefreshProjects()
         {
+            // Refresh data from server first
+            ProjectServiceProxy.Current.Refresh();
+
             Projects = new ObservableCollection<ProjectDetailViewModel>(
                 ProjectServiceProxy.Current.Projects.Select(p => new ProjectDetailViewModel(p)));
             NotifyPropertyChanged(nameof(Projects));
+        }
+
+        public void DeleteProject()
+        {
+            if (SelectedProject?.Model?.Id != null && SelectedProject.Model.Id > 0)
+            {
+                ProjectServiceProxy.Current.DeleteProject(SelectedProject.Model.Id);
+                RefreshProjects(); // Refresh the list after deletion
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

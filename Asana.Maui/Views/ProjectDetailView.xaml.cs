@@ -9,9 +9,10 @@ public partial class ProjectDetailView : ContentPage
     public ProjectDetailView()
     {
         InitializeComponent();
-
     }
+
     public int ProjectId { get; set; }
+
     private void CancelClicked(object sender, EventArgs e)
     {
         Shell.Current.GoToAsync("//ProjectsPage");
@@ -30,11 +31,23 @@ public partial class ProjectDetailView : ContentPage
 
     private void ContentPage_NavigatedTo(object sender, NavigatedToEventArgs e)
     {
-        var project = Asana.Library.Services.ProjectServiceProxy.Current.Projects
-            .FirstOrDefault(p => p.Id == ProjectId);
+        Project? project = null;
+
+        if (ProjectId > 0)
+        {
+            // Editing existing project
+            project = Asana.Library.Services.ProjectServiceProxy.Current.Projects
+                .FirstOrDefault(p => p.Id == ProjectId);
+        }
+
         if (project != null)
+        {
             BindingContext = new ProjectDetailViewModel(project);
+        }
         else
-            BindingContext = new ProjectDetailViewModel(); // For new projects
+        {
+            // Creating new project
+            BindingContext = new ProjectDetailViewModel();
+        }
     }
 }
