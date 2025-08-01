@@ -34,7 +34,7 @@ namespace Asana.API.Database
         Name = "Project 1",
         Description = "First project description",
         CompletePercent = 75.0,
-        ToDos = toDos.Where(t => t.ProjectId == 1).ToList()
+        ToDosListP = toDos.Where(t => t.ProjectId == 1).ToList()
     },
     new Project
     {
@@ -42,7 +42,7 @@ namespace Asana.API.Database
         Name = "Project 2",
         Description = "Second project description",
         CompletePercent = 40.0,
-        ToDos = toDos.Where(t => t.ProjectId == 2).ToList()
+        ToDosListP= toDos.Where(t => t.ProjectId == 2).ToList()
     },
     new Project
     {
@@ -50,7 +50,7 @@ namespace Asana.API.Database
         Name = "Project 3",
         Description = "Third project description",
         CompletePercent = 100.0,
-        ToDos = toDos.Where(t => t.ProjectId == 3).ToList()
+        ToDosListP= toDos.Where(t => t.ProjectId == 3).ToList()
     },
     new Project
     {
@@ -58,7 +58,7 @@ namespace Asana.API.Database
         Name = "Project 4",
         Description = "Fourth project description",
         CompletePercent = 0.0,
-        ToDos = new List<ToDo>()
+        ToDosListP = new List<ToDo>()
     },
     new Project
     {
@@ -66,7 +66,7 @@ namespace Asana.API.Database
         Name = "Project 5",
         Description = "Fifth project description",
         CompletePercent = 0.0,
-        ToDos = new List<ToDo>()
+        ToDosListP = new List<ToDo>()
     },
     new Project
     {
@@ -74,7 +74,7 @@ namespace Asana.API.Database
         Name = "Project 6",
         Description = "Sixth project description",
         CompletePercent = 0.0,
-        ToDos = new List<ToDo>()
+        ToDosListP = new List<ToDo>()
     },
 };
 
@@ -91,7 +91,7 @@ namespace Asana.API.Database
                 foreach (var project in projects)
                 {
                     var proj = project;
-                    proj.ToDoList = ToDos.Where(t => t.ProjectId == proj.Id).ToList();
+                    proj.ToDosListP = ToDos.Where(t => t.ProjectId == proj.Id).ToList();
                     projectList.Add(proj);
                 }
                 return projectList;

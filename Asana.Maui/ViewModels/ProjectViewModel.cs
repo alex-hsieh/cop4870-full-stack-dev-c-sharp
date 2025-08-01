@@ -20,13 +20,13 @@ namespace Asana.Maui.ViewModels
         {
             get
             {
-                if (Model == null || Model.ToDoList == null)
+                if (Model == null || Model.ToDos == null)
                 {
                     return new ObservableCollection<ToDoDetailViewModel>();
                 }
 
                 return new ObservableCollection<ToDoDetailViewModel>(
-                    Model.ToDoList.Select(t => new ToDoDetailViewModel(t)));
+                    Model.ToDos.Select(t => new ToDoDetailViewModel(t)));
             }
         }
         public ICommand? ToggleToDoVisibility { get; set; }
@@ -84,24 +84,24 @@ namespace Asana.Maui.ViewModels
 
         public string? Description
         {
-            get => Model?.ToDoList?.FirstOrDefault()?.Description; // Or add a Description property to Project if needed
+            get => Model?.Description;
         }
 
         public int ToDoCount
         {
-            get => Model?.ToDoList?.Count ?? 0;
+            get => Model?.ToDos?.Count ?? 0;
         }
 
         public double CompletionPercentage
         {
             get
             {
-                if (Model?.ToDoList == null || Model.ToDoList.Count == 0)
+                if (Model?.ToDos == null || Model.ToDos.Count == 0)
                     return 0;
-                int completed = Model.ToDoList.Count(t => t.IsCompleted == true);
-                return (double)completed / Model.ToDoList.Count * 100;
+                int completed = Model.ToDos.Count(t => t.IsCompleted == true);
+                return (double)completed / Model.ToDos.Count * 100;
             }
         }
-        public IEnumerable<string> ToDoNames => Model?.ToDoList?.Select(t => t.Name ?? string.Empty) ?? Enumerable.Empty<string>();
+        public IEnumerable<string> ToDoNames => Model?.ToDos?.Select(t => t.Name ?? string.Empty) ?? Enumerable.Empty<string>();
     }
 }

@@ -12,6 +12,6 @@ namespace Asana.Library.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         public double CompletePercent { get; set; }
-        public List<ToDo>? ToDos { get; set; }
+        public List<ToDo>? ToDosListP { get; set; }
     }
 }
