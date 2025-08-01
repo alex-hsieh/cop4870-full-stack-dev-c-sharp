@@ -47,7 +47,7 @@ namespace Asana.Maui.ViewModels
                 return new ObservableCollection<ToDoDetailViewModel>(toDos);
             }
         }
-
+        /*
         public ObservableCollection<ProjectViewModel> Projects
         {
             get
@@ -58,7 +58,7 @@ namespace Asana.Maui.ViewModels
                 return new ObservableCollection<ProjectViewModel>(projectList);
             }
         }
-
+       */
         public int SelectedToDoId => SelectedToDo?.Model?.Id ?? 0;
 
         private bool isShowCompleted;

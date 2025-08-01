@@ -78,11 +78,11 @@ namespace Api.ToDoApplication.Persistence
             {
                 var root = new DirectoryInfo(_toDoRoot);
                 var _toDos = new List<ToDo>();
-                foreach(var patientFile in root.GetFiles())
+                foreach(var tOdOs in root.GetFiles())
                 {
                     var toDo = JsonConvert
                         .DeserializeObject<ToDo>
-                        (File.ReadAllText(patientFile.FullName));
+                        (File.ReadAllText(tOdOs.FullName));
                     if(toDo != null)
                     {
                         _toDos.Add(toDo);

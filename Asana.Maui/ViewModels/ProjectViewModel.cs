@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace Asana.Maui.ViewModels
 {
-    public class ProjectViewModel: INotifyPropertyChanged
+    public class ProjectViewModel : INotifyPropertyChanged
     {
         public Project? Model { get; set; }
 
@@ -29,10 +29,10 @@ namespace Asana.Maui.ViewModels
                     Model.ToDoList.Select(t => new ToDoDetailViewModel(t)));
             }
         }
-        public ICommand? ToggleToDoVisibility {  get; set; }
+        public ICommand? ToggleToDoVisibility { get; set; }
 
         private Visibility toDoVisibility;
-        public Visibility ToDoVisibility { 
+        public Visibility ToDoVisibility {
             get
             {
                 return toDoVisibility;
@@ -54,7 +54,7 @@ namespace Asana.Maui.ViewModels
         }
         public void DoToggleToDoVisibility()
         {
-            if(ToDoVisibility == Visibility.Collapsed)
+            if (ToDoVisibility == Visibility.Collapsed)
             {
                 ToDoVisibility = Visibility.Visible;
             } else
@@ -81,5 +81,27 @@ namespace Asana.Maui.ViewModels
         {
             return $"{Model?.Id ?? -1}. {Model?.Name}";
         }
+
+        public string? Description
+        {
+            get => Model?.ToDoList?.FirstOrDefault()?.Description; // Or add a Description property to Project if needed
+        }
+
+        public int ToDoCount
+        {
+            get => Model?.ToDoList?.Count ?? 0;
+        }
+
+        public double CompletionPercentage
+        {
+            get
+            {
+                if (Model?.ToDoList == null || Model.ToDoList.Count == 0)
+                    return 0;
+                int completed = Model.ToDoList.Count(t => t.IsCompleted == true);
+                return (double)completed / Model.ToDoList.Count * 100;
+            }
+        }
+        public IEnumerable<string> ToDoNames => Model?.ToDoList?.Select(t => t.Name ?? string.Empty) ?? Enumerable.Empty<string>();
     }
 }
