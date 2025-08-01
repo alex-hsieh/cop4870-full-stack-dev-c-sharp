@@ -31,7 +31,13 @@ namespace Asana.Maui.ViewModels
 
         private void LoadProjects()
         {
-            AvailableProjects = ProjectServiceProxy.Current.Projects.ToList();
+            AvailableProjects = new List<Project>();
+
+            // Agregar opción "No Project" al inicio de la lista
+            AvailableProjects.Add(new Project { Id = 0, Name = "No Project" });
+
+            // Agregar todos los proyectos reales
+            AvailableProjects.AddRange(ProjectServiceProxy.Current.Projects);
         }
 
         public void DoDelete()
@@ -49,14 +55,19 @@ namespace Asana.Maui.ViewModels
         {
             get
             {
-                if (Model?.ProjectId == null) return null;
+                if (Model?.ProjectId == null || Model.ProjectId == 0)
+                {
+                    // Retornar la opción "No Project"
+                    return AvailableProjects.FirstOrDefault(p => p.Id == 0);
+                }
                 return AvailableProjects.FirstOrDefault(p => p.Id == Model.ProjectId);
             }
             set
             {
                 if (Model != null)
                 {
-                    Model.ProjectId = value?.Id; // Aquí se asigna el ProjectId al ToDo
+                    // Si selecciona "No Project", asignar null al ProjectId
+                    Model.ProjectId = (value?.Id == 0) ? null : value?.Id;
                 }
             }
         }
@@ -66,9 +77,11 @@ namespace Asana.Maui.ViewModels
         {
             get
             {
-                if (Model?.ProjectId == null) return "No Project";
-                var project = AvailableProjects.FirstOrDefault(p => p.Id == Model.ProjectId);
-                return project?.Name ?? "Unknown / Unassigned Project";
+                if (Model?.ProjectId == null || Model.ProjectId == 0)
+                    return "No Project";
+
+                var project = ProjectServiceProxy.Current.Projects.FirstOrDefault(p => p.Id == Model.ProjectId);
+                return project?.Name ?? "Unknown Project";
             }
         }
 
