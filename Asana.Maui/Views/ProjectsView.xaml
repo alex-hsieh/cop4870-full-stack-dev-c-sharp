@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Asana.Maui.Views.ProjectsView"
-             Title="ProjectsView, BABY">
+             Title="ProjectsView, BABY!!!!">
     <VerticalStackLayout>
         <ListView HeightRequest="400"
             ItemsSource="{Binding Projects}"
@@ -33,7 +33,7 @@
         </ListView>
         <Button Text="Add Project" Clicked="AddClicked"/>
         <Button Text="Edit Project" Clicked="EditClicked"/>
-        <Button Text="Delete Project" Clicked="DeleteClicked"/>
+        <Button Text="Delete Project" Clicked="DeleteClicked" BackgroundColor="IndianRed"/>
         <Button Text="Cancel" Clicked="CancelClicked"/>
     </VerticalStackLayout>
 </ContentPage>

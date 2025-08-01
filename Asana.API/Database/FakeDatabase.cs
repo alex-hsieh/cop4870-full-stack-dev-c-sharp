@@ -147,10 +147,10 @@ namespace Asana.API.Database
             }
             else
             {
-                var oldToDo = toDos.FirstOrDefault(t => t.Id == projectToAdd.Id);
-                if (oldToDo != null)
+                var oldProject = projects.FirstOrDefault(p => p.Id == projectToAdd.Id); // Fixed: was toDos
+                if (oldProject != null)
                 {
-                    toDos.Remove(oldToDo);
+                    projects.Remove(oldProject); // Fixed: was toDos
                 }
                 projects.Add(projectToAdd);
             }

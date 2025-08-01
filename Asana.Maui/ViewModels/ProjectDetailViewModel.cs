@@ -26,6 +26,13 @@ namespace Asana.Maui.ViewModels
             Model = model;
         }
 
+        // Properties needed for the UI binding
+        public double CompletionPercentage => Model?.CompletePercent ?? 0.0;
+
+        public string Description => Model?.Description ?? string.Empty;
+
+        public List<string> ToDoNames => Model?.ToDosListP?.Select(t => t.Name ?? "Unnamed Task").ToList() ?? new List<string>();
+
         public void AddOrUpdateProject()
         {
             if (Model == null)

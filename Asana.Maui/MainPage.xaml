@@ -105,7 +105,10 @@
                 <VerticalStackLayout Grid.Row="3">
                     <Button Text="Add New ToDo" Clicked="AddNewClicked" BackgroundColor="Cyan"/>
                 <Button Text="Edit Selected ToDo" Clicked="EditClicked" BackgroundColor="Cyan"/>
+               
+                    <!--
                 <Button Text="Delete Selected ToDo" Clicked="DeleteClicked" BackgroundColor="Cyan"/>
+                -->
                 <Button Text="Manage Projects" Clicked="ProjectClicked" BackgroundColor="Gold"/>
                 </VerticalStackLayout>
 
