@@ -19,7 +19,7 @@ public partial class ProjectDetailView : ContentPage
 
     private void OkClicked(object sender, EventArgs e)
     {
-        (BindingContext as ToDoDetailViewModel)?.AddOrUpdateToDo();
+        (BindingContext as ProjectDetailViewModel)?.AddOrUpdateProject();
         Shell.Current.GoToAsync("//ProjectsPage");
     }
 
@@ -30,6 +30,11 @@ public partial class ProjectDetailView : ContentPage
 
     private void ContentPage_NavigatedTo(object sender, NavigatedToEventArgs e)
     {
-        BindingContext = new ToDoDetailViewModel(ProjectId);
+        var project = Asana.Library.Services.ProjectServiceProxy.Current.Projects
+            .FirstOrDefault(p => p.Id == ProjectId);
+        if (project != null)
+            BindingContext = new ProjectDetailViewModel(project);
+        else
+            BindingContext = new ProjectDetailViewModel(); // For new projects
     }
 }
