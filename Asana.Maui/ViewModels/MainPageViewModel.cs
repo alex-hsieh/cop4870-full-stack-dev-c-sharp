@@ -78,6 +78,8 @@ namespace Asana.Maui.ViewModels
             }
         }
 
+
+
         public void DeleteToDo()
         {
             if (SelectedToDo == null)

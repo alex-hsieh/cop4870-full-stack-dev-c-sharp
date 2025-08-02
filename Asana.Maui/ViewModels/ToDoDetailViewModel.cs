@@ -4,8 +4,10 @@ using System.Windows.Input;
 using Asana.Library.Models;
 using Asana.Library.Services;
 
+
 namespace Asana.Maui.ViewModels
 {
+
     public class ToDoDetailViewModel
     {
         public ToDoDetailViewModel()
@@ -33,10 +35,10 @@ namespace Asana.Maui.ViewModels
         {
             AvailableProjects = new List<Project>();
 
-            // Agregar opción "No Project" al inicio de la lista
+            
             AvailableProjects.Add(new Project { Id = 0, Name = "No Project" });
 
-            // Agregar todos los proyectos reales
+            
             AvailableProjects.AddRange(ProjectServiceProxy.Current.Projects);
         }
 
@@ -48,7 +50,7 @@ namespace Asana.Maui.ViewModels
         public ToDo? Model { get; set; }
         public ICommand? DeleteCommand { get; set; }
 
-        // Add project support
+        
         public List<Project> AvailableProjects { get; private set; } = new List<Project>();
 
         public Project? SelectedProject
@@ -57,7 +59,7 @@ namespace Asana.Maui.ViewModels
             {
                 if (Model?.ProjectId == null || Model.ProjectId == 0)
                 {
-                    // Retornar la opción "No Project"
+                    
                     return AvailableProjects.FirstOrDefault(p => p.Id == 0);
                 }
                 return AvailableProjects.FirstOrDefault(p => p.Id == Model.ProjectId);
@@ -66,13 +68,21 @@ namespace Asana.Maui.ViewModels
             {
                 if (Model != null)
                 {
-                    // Si selecciona "No Project", asignar null al ProjectId
+                    
                     Model.ProjectId = (value?.Id == 0) ? null : value?.Id;
                 }
             }
         }
 
-        // Método simple para obtener el nombre del proyecto
+        // Add this new constructor to support both ToDoId and ProjectId
+        public ToDoDetailViewModel(int toDoId, int projectId)
+        {
+            Model = ToDoServiceProxy.Current.GetById(toDoId) ?? new ToDo();
+            Model.ProjectId = projectId == 0 ? null : projectId;
+            DeleteCommand = new Command(DoDelete);
+            LoadProjects();
+        }
+
         public string ProjectName
         {
             get
@@ -144,6 +154,25 @@ namespace Asana.Maui.ViewModels
         public void AddOrUpdateToDo()
         {
             ToDoServiceProxy.Current.AddOrUpdate(Model);
+
+            if (Model?.ProjectId != null && Model.ProjectId != 0)
+            {
+                var project = ProjectServiceProxy.Current.Projects.FirstOrDefault(p => p.Id == Model.ProjectId);
+                if (project != null && project.ToDosListP != null)
+                {
+                    // Update the ToDo in the project's list
+                    var todoInProject = project.ToDosListP.FirstOrDefault(t => t.Id == Model.Id);
+                    if (todoInProject != null)
+                    {
+                        todoInProject.IsCompleted = Model.IsCompleted;
+                    }
+
+                    // Recalculate completion percent
+                    int total = project.ToDosListP.Count;
+                    int completed = project.ToDosListP.Count(t => t.IsCompleted == true);
+                    project.CompletePercent = total > 0 ? (double)completed / total * 100 : 0;
+                }
+            }
         }
     }
 }

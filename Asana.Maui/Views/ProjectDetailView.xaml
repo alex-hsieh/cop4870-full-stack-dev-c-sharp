@@ -2,23 +2,56 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Asana.Maui.Views.ProjectDetailView"
-             Title="ProjectDetailView"
+             Title="Project Details"
              NavigatedFrom="ContentPage_NavigatedFrom"
              NavigatedTo="ContentPage_NavigatedTo">
-    <VerticalStackLayout Spacing="20" Padding="20">
-        <Grid ColumnDefinitions="Auto,3*">
-            <Label Text="Project Id:" Grid.Column="0" VerticalOptions="Center"/>
-            <Entry Text="{Binding Model.Id}" Grid.Column="1" IsReadOnly="True"/>
-        </Grid>
-        <Grid ColumnDefinitions="Auto,3*">
-            <Label Text="Project Name:" Grid.Column="0" VerticalOptions="Center"/>
-            <Entry Text="{Binding Model.Name}" Grid.Column="1"/>
-        </Grid>
-        <Grid ColumnDefinitions="Auto,3*">
-            <Label Text="Description:" Grid.Column="0" VerticalOptions="Center"/>
-            <Entry Text="{Binding Model.Description}" Grid.Column="1"/>
-        </Grid>
-        <Button Text="Ok" Clicked="OkClicked"/>
-        <Button Text="Cancel" Clicked="CancelClicked"/>
-    </VerticalStackLayout>
+
+    <ScrollView Padding="20">
+        <VerticalStackLayout Spacing="15">
+
+            <!-- Project Header -->
+            <Label Text="{Binding Model.Id, StringFormat='Project #{0}'}"
+                   FontSize="Large"
+                   FontAttributes="Bold"
+                   IsVisible="{Binding Model.Id, Converter={StaticResource IntToBoolConverter}}" />
+
+            <!-- Project Name -->
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Text="Project Name:" Grid.Column="0" VerticalOptions="Center" FontAttributes="Bold"/>
+                <Entry Text="{Binding Model.Name}" Grid.Column="1" Placeholder="Enter project name..." Margin="10,0,0,0"/>
+            </Grid>
+
+            <!-- Description -->
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Text="Description:" Grid.Column="0" VerticalOptions="Start" FontAttributes="Bold" Margin="0,10,0,0"/>
+                <Editor Text="{Binding Model.Description}" Grid.Column="1" Placeholder="Enter project description..." HeightRequest="100" Margin="10,0,0,0"/>
+            </Grid>
+
+            <!-- ToDos Section -->
+            <Label Text="ToDos:" FontAttributes="Bold" Margin="0,10,0,0"/>
+            <CollectionView ItemsSource="{Binding ToDos}" HeightRequest="200">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding Name}" Grid.Column="0"/>
+                            <Label Text="{Binding IsCompleted, Converter={StaticResource BoolToCompletionStatusConverter}}" Grid.Column="1" FontSize="Small"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Add ToDo Button -->
+            <Button Text="Add ToDo"
+                    Command="{Binding AddToDoCommand}"
+                    BackgroundColor="Cyan"
+                    Margin="0,10,0,0"/>
+
+            <!-- Action Buttons -->
+            <HorizontalStackLayout Spacing="10" Margin="0,20,0,0">
+                <Button Text="Save Project" Clicked="OkClicked" BackgroundColor="{StaticResource Primary}" TextColor="White"/>
+                <Button Text="Cancel" Clicked="CancelClicked" BackgroundColor="{StaticResource Gray300}" TextColor="Black"/>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
