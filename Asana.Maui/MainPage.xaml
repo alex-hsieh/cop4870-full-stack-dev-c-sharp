@@ -64,8 +64,7 @@
                                             <Label Grid.Row="1" FontSize="Small" Text="{Binding Model.Description}"/>
                                             <Label Grid.Row="2" Text=" Linked to:" FontAttributes="Italic"/>
                                             <Label Grid.Row="4" Grid.Column="2"  Text="{Binding ProjectName}"
-                                                   FontSize="Micro" TextColor="Coral" 
-                                                   IsVisible="{Binding Model.ProjectId}"/>
+                                                   FontSize="Micro" TextColor="Coral"/>
                                         </Grid>
 
                                         <Button Grid.Column="4" BackgroundColor="IndianRed" Text="Delete" Clicked="InLineDeleteClicked" Command="{Binding DeleteCommand}"/>
