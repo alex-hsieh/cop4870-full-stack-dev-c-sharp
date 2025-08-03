@@ -1,7 +1,9 @@
-﻿using Asana.API.Database;
+﻿using Asana.API.DTOs;
 using Asana.API.Enterprise;
 using Asana.Library.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Asana.API.Controllers
 {
@@ -10,27 +12,41 @@ namespace Asana.API.Controllers
     public class ToDoController : ControllerBase
     {
         [HttpGet]
-        public IEnumerable<ToDo> Get()
+        public IEnumerable<ToDoDto> Get()
         {
-            return new ToDoEC().GetToDos();
+            return new ToDoEC().GetToDos()
+                .Select(ToDoDto.FromModel);
         }
 
         [HttpGet("{id}")]
-        public ToDo? GetById(int id)
+        public ActionResult<ToDoDto> GetById(int id)
         {
-            return new ToDoEC().GetById(id);
+            var toDo = new ToDoEC().GetById(id);
+            if (toDo == null)
+                return NotFound();
+            return ToDoDto.FromModel(toDo);
         }
 
         [HttpDelete("{id}")]
-        public ToDo? Delete(int id)
+        public ActionResult<ToDoDto> Delete(int id)
         {
-            return new ToDoEC().Delete(id);
+            var deleted = new ToDoEC().Delete(id);
+            if (deleted == null)
+                return NotFound();
+            return ToDoDto.FromModel(deleted);
         }
 
         [HttpPost]
-        public ToDo? AddOrUpdate([FromBody] ToDo? toDo)
+        public ActionResult<ToDoDto> AddOrUpdate([FromBody] ToDoDto? toDoDto)
         {
-            return new ToDoEC().AddOrUpdate(toDo);
+            if (toDoDto == null)
+                return BadRequest();
+
+            var toDo = toDoDto.ToModel();
+            var result = new ToDoEC().AddOrUpdate(toDo);
+            if (result == null)
+                return BadRequest();
+            return ToDoDto.FromModel(result);
         }
     }
 }

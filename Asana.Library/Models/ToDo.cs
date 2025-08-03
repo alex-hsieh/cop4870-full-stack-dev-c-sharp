@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace Asana.Library.Models
 {
-    public class ToDo
+    public class ToDo : INotifyPropertyChanged
     {
         public ToDo()
         {
@@ -17,7 +17,20 @@ namespace Asana.Library.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         public int? Priority { get; set; }
-        public bool? IsCompleted { get; set; }
+
+        private bool? isCompleted;
+        public bool? IsCompleted
+        {
+            get => isCompleted;
+            set
+            {
+                if (isCompleted != value)
+                {
+                    isCompleted = value;
+                    OnPropertyChanged(nameof(IsCompleted));
+                }
+            }
+        }
 
         public int? ProjectId { get; set; }
 
