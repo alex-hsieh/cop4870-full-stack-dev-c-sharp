@@ -60,15 +60,15 @@
                                                 <RowDefinition/>
                                                 <RowDefinition/>
                                             </Grid.RowDefinitions>
-                                            <Label TextColor="Red" Grid.Row="0" Text="{Binding Model.Name}"/>
-                                            <Label Grid.Row="1" Text="{Binding Model.Description}"/>
+                                            <Label TextColor="Fuchsia" Grid.Row="0" FontSize="Medium" Text="{Binding Model.Name}"/>
+                                            <Label Grid.Row="1" FontSize="Small" Text="{Binding Model.Description}"/>
                                             <Label Grid.Row="2" Text=" Linked to:" FontAttributes="Italic"/>
                                             <Label Grid.Row="4" Grid.Column="2"  Text="{Binding ProjectName}"
                                                    FontSize="Micro" TextColor="Coral" 
                                                    IsVisible="{Binding Model.ProjectId}"/>
                                         </Grid>
 
-                                        <Button Grid.Column="4" Text="Delete" Clicked="InLineDeleteClicked" Command="{Binding DeleteCommand}"/>
+                                        <Button Grid.Column="4" BackgroundColor="IndianRed" Text="Delete" Clicked="InLineDeleteClicked" Command="{Binding DeleteCommand}"/>
                                     </Grid>
                                 </ViewCell>
                             </DataTemplate>
@@ -78,8 +78,8 @@
             </ScrollView>
             <!-- Button Bar -->
             <VerticalStackLayout Grid.Row="2">
-                <Button Text="Add New ToDo" Clicked="AddNewClicked" BackgroundColor="Cyan"/>
-                <Button Text="Edit Selected ToDo" Clicked="EditClicked" BackgroundColor="Cyan"/>
+                <Button Text="Add New ToDo" Clicked="AddNewClicked" BackgroundColor="Coral"/>
+                <Button Text="Edit Selected ToDo" Clicked="EditClicked" BackgroundColor="Coral"/>
                 <Button Text="Manage Projects" Clicked="ProjectClicked" BackgroundColor="Gold"/>
             </VerticalStackLayout>
         </Grid>
