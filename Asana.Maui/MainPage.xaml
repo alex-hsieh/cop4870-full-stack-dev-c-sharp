@@ -45,26 +45,54 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
-                                <ColumnDefinition Width="10*"/>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="7*"/>
                                 <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
+                                
+                            <!-- column 0 (checkboxes) definition-->
                             </Grid.ColumnDefinitions>
                             <CheckBox IsChecked="{Binding Model.IsCompleted, Mode=TwoWay}" Grid.Column="0"/>
+
+                            <!-- column 1 (titles) definition-->
                             <Grid Grid.Column="1">
                                 <Grid.RowDefinitions>
                                     <RowDefinition/>
                                     <RowDefinition/>
                                     <RowDefinition/>
                                     <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0" FontSize="Medium" Text="Project Name:"/>
+                                <Label Grid.Row="1" FontSize="Small" Text="Project Description:"/>
+                                <Label Grid.Row="2" Text=" Linked to:" FontAttributes="Italic"/>
+                                <Label Grid.Row="3" Text="DueDate: " FontSize="Small"/>
+                                <Label Grid.Row="4" Text="Priority:" FontAttributes="Bold" FontSize="Small"/>
+                            </Grid>
+
+                            <!-- column 2 (context) definition-->
+                            <Grid Grid.Column="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    
                                 </Grid.RowDefinitions>
                                 <Label TextColor="Fuchsia" Grid.Row="0" FontSize="Medium" Text="{Binding Model.Name}"/>
                                 <Label Grid.Row="1" FontSize="Small" Text="{Binding Model.Description}"/>
-                                <Label Grid.Row="2" Text=" Linked to:" FontAttributes="Italic"/>
-                                <Label Grid.Row="4" Grid.Column="2"  Text="{Binding ProjectName}"
-                                       FontSize="Micro" TextColor="Coral"/>
+                                <Label Grid.Row="2" Grid.Column="2"  Text="{Binding ProjectName}"
+                                        FontSize="Micro" TextColor="Coral"/>
+                                <Label Grid.Row="3" Text="{Binding Model.DueDate}" FontAttributes="Italic" FontSize="Small"/>
+                                <Label Grid.Row="4" Text="{Binding Model.Priority}" FontAttributes="Bold" FontSize="Small" TextColor="DarkGreen"/>
                             </Grid>
-                            <Button Grid.Column="4" BackgroundColor="IndianRed" Text="Delete" Clicked="InLineDeleteClicked" Command="{Binding DeleteCommand}"/>
+
+                            <!-- column 3 (delete button) definition-->
+                            <Grid Grid.Column="3">
+                                <Button Grid.Column="1" BackgroundColor="IndianRed" Text="Delete" Clicked="InLineDeleteClicked" Command="{Binding DeleteCommand}"/>
+                            </Grid>
+                            
                         </Grid>
                     </ViewCell>
                 </DataTemplate>
