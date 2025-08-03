@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Asana.Maui.Views.ToDoDetailView"
-             Title="Task Details"
+             Title="ToDo Details"
              NavigatedFrom="ContentPage_NavigatedFrom"
              NavigatedTo="ContentPage_NavigatedTo">
 
@@ -17,10 +17,10 @@
 
             <!-- Task Name -->
             <Grid ColumnDefinitions="Auto,*">
-                <Label Text="Task Name:" Grid.Column="0" VerticalOptions="Center" FontAttributes="Bold"/>
+                <Label Text="ToDo Name:" Grid.Column="0" VerticalOptions="Center" FontAttributes="Bold"/>
                 <Entry Text="{Binding Model.Name}" 
                        Grid.Column="1" 
-                       Placeholder="Enter task name..."
+                       Placeholder="Enter ToDo name..."
                        Margin="10,0,0,0"/>
             </Grid>
 
@@ -35,7 +35,7 @@
                 <Label Text="Description:" Grid.Column="0" VerticalOptions="Start" FontAttributes="Bold" Margin="0,10,0,0"/>
                 <Editor Text="{Binding Model.Description}" 
                         Grid.Column="1"
-                        Placeholder="Enter task description..."
+                        Placeholder="Enter ToDo description..."
                         HeightRequest="100"
                         Margin="10,0,0,0"/>
             </Grid>

@@ -18,7 +18,7 @@
                             </Grid>
                             <Label Text="{Binding Model.Name}" FontAttributes="Bold" FontSize="Medium"/>
                             <Label Text="{Binding Description}" FontAttributes="Italic" FontSize="Small"/>
-                            <Label Text="ToDos:" FontAttributes="Bold" Margin="0,5,0,0"/>
+                            <Label Text="Pending ToDos:" FontAttributes="Bold" Margin="0,5,0,0"/>
                             <CollectionView ItemsSource="{Binding IncompleteToDoNames}" Margin="10,0,0,0">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
