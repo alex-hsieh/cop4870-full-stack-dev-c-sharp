@@ -126,7 +126,7 @@ namespace Asana.Library.Services
             }
             else
             {
-                // Fallback: remove by ID if no object is returned
+                // remove by ID if no object is returned
                 var localToDo = _toDoList.FirstOrDefault(t => t.Id == id);
                 if (localToDo != null)
                 {

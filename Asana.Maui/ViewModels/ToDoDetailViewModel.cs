@@ -114,7 +114,9 @@ namespace Asana.Maui.ViewModels
             {
                 OnPropertyChanged(nameof(Model));
                 OnPropertyChanged(nameof(Model.IsCompleted));
+                ToDoServiceProxy.Current.AddOrUpdate(Model);
             }
+            
             if (e.PropertyName == nameof(ToDo.ProjectId))
             {
                 SetProjectName(Model?.ProjectId);
