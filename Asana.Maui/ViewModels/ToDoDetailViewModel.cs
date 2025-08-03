@@ -12,9 +12,54 @@ namespace Asana.Maui.ViewModels
 {
     public class ToDoDetailViewModel : INotifyPropertyChanged
     {
+        private List<Project> projects;
+        public List<Project> Projects
+        {
+            get => projects;
+            set
+            {
+                if (projects != value)
+                {
+                    projects = value;
+                    OnPropertyChanged(nameof(Projects));
+                }
+            }
+        }
+
+        private Project? selectedProject;
+        public Project? SelectedProject
+        {
+            get => selectedProject;
+            set
+            {
+                if (selectedProject != value)
+                {
+                    selectedProject = value;
+                    Model.ProjectId = selectedProject?.Id;
+                    SetProjectName(Model.ProjectId);
+                    OnPropertyChanged(nameof(SelectedProject));
+                }
+            }
+        }
+
+        private void LoadProjects()
+        {
+            // Add a dummy "No Project" option
+            var allProjects = ProjectServiceProxy.Current.Projects.ToList();
+            allProjects.Insert(0, new Project { Id = 0, Name = "No Project" });
+            Projects = allProjects;
+        }
+
+        private void SetSelectedProject()
+        {
+            SelectedProject = Projects.FirstOrDefault(p => p.Id == (Model.ProjectId ?? 0));
+        }
+
         public ToDoDetailViewModel()
         {
             Model = new ToDo();
+            LoadProjects();
+            SetSelectedProject();
             SetProjectName(Model.ProjectId);
             HookModel();
             DeleteCommand = new Command(DoDelete);
@@ -23,6 +68,8 @@ namespace Asana.Maui.ViewModels
         public ToDoDetailViewModel(int toDoId, int projectId)
         {
             Model = ToDoServiceProxy.Current.GetById(toDoId) ?? new ToDo { ProjectId = projectId };
+            LoadProjects();
+            SetSelectedProject();
             SetProjectName(Model.ProjectId);
             HookModel();
             DeleteCommand = new Command(DoDelete);
@@ -31,6 +78,8 @@ namespace Asana.Maui.ViewModels
         public ToDoDetailViewModel(ToDo? model)
         {
             Model = model ?? new ToDo();
+            LoadProjects();
+            SetSelectedProject();
             SetProjectName(Model.ProjectId);
             HookModel();
             DeleteCommand = new Command(DoDelete);

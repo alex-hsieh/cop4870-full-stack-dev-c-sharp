@@ -43,9 +43,9 @@
             <!-- Project Assignment -->
             <Grid ColumnDefinitions="Auto,*">
                 <Label Text="Project:" Grid.Column="0" VerticalOptions="Center" FontAttributes="Bold"/>
-                <Picker ItemsSource="{Binding AvailableProjects}"
+                <Picker ItemsSource="{Binding Projects}"
                         ItemDisplayBinding="{Binding Name}"
-                        SelectedItem="{Binding SelectedProject}"
+                        SelectedItem="{Binding SelectedProject, Mode=TwoWay}"
                         Grid.Column="1"
                         Title="Select a project..."
                         Margin="10,0,0,0"/>
