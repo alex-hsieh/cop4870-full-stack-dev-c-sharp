@@ -17,6 +17,10 @@ namespace Asana.Maui.ViewModels
         public ObservableCollection<ToDo> ToDos { get; set; }
 
         public ICommand AddToDoCommand { get; }
+        public List<string> IncompleteToDoNames =>
+            ToDos?.Where(t => t.IsCompleted != true)
+              .Select(t => t.Name ?? "Unnamed Task")
+             .ToList() ?? new List<string>();
 
         public ProjectDetailViewModel()
         {
@@ -61,6 +65,8 @@ namespace Asana.Maui.ViewModels
             Model.ToDosListP.Add(newToDo);
             OnPropertyChanged(nameof(ToDos));
             OnPropertyChanged(nameof(CompletionPercentage));
+            OnPropertyChanged(nameof(IncompleteToDoNames)); 
+
         }
 
         public void RefreshToDos()
@@ -68,19 +74,18 @@ namespace Asana.Maui.ViewModels
             if (Model == null)
                 return;
 
-            // Get the latest todos for this project from the ToDoServiceProxy
             var latestToDos = GetProjectToDos();
 
             ToDos.Clear();
             foreach (var todo in latestToDos)
                 ToDos.Add(todo);
 
-            // Update the model's ToDosListP as well
             Model.ToDosListP = latestToDos.ToList();
 
             OnPropertyChanged(nameof(ToDos));
             OnPropertyChanged(nameof(CompletionPercentage));
             OnPropertyChanged(nameof(ToDoNames));
+            OnPropertyChanged(nameof(IncompleteToDoNames)); 
         }
 
         private IEnumerable<ToDo> GetProjectToDos()
