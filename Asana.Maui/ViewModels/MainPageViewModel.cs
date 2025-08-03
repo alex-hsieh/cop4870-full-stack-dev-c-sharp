@@ -19,54 +19,78 @@ namespace Asana.Maui.ViewModels
         {
             _toDoSvc = ToDoServiceProxy.Current;
             Query = string.Empty;
+            SubscribeToToDoChanges();
         }
 
         public ToDoDetailViewModel SelectedToDo { get; set; }
 
         private string query;
-        public string Query { 
+        public string Query
+        {
             get { return query; }
-            set {
+            set
+            {
                 if (query != value)
                 {
                     query = value;
                     NotifyPropertyChanged();
+                    NotifyPropertyChanged(nameof(ToDos));
                 }
             }
         }
+
+        private ObservableCollection<ToDoDetailViewModel> toDosCache;
         public ObservableCollection<ToDoDetailViewModel> ToDos
         {
             get
             {
-                var toDos = _toDoSvc.ToDos.Where(t => (t?.Name?.Contains(Query) ?? false) || (t?.Description?.Contains(Query) ?? false))
-                        .Select(t => new ToDoDetailViewModel(t));
+                var toDos = _toDoSvc.ToDos
+                    .Where(t => (t?.Name?.Contains(Query) ?? false) || (t?.Description?.Contains(Query) ?? false))
+                    .Select(t => new ToDoDetailViewModel(t))
+                    .ToList();
+
+                foreach (var todoVM in toDos)
+                {
+                    todoVM.PropertyChanged -= ToDoItem_PropertyChanged;
+                    todoVM.PropertyChanged += ToDoItem_PropertyChanged;
+                }
+
                 if (IsShowCompleted)
                 {
-                    toDos = toDos.Where(t => t?.Model?.IsCompleted ?? false);
+                    toDos = toDos.Where(t => t?.Model?.IsCompleted ?? false).ToList();
                 }
                 else
                 {
-                    toDos = toDos.Where(t => !(t?.Model?.IsCompleted ?? false));
+                    toDos = toDos.Where(t => !(t?.Model?.IsCompleted ?? false)).ToList();
                 }
-                return new ObservableCollection<ToDoDetailViewModel>(toDos);
+
+                toDosCache = new ObservableCollection<ToDoDetailViewModel>(toDos);
+                return toDosCache;
             }
         }
-        /*
-        public ObservableCollection<ProjectViewModel> Projects
+
+        private void SubscribeToToDoChanges()
         {
-            get
+            foreach (var todo in _toDoSvc.ToDos)
             {
-                var projectList 
-                    = ProjectServiceProxy.Current
-                    .Projects.Select(p => new ProjectViewModel(p));
-                return new ObservableCollection<ProjectViewModel>(projectList);
+                var vm = new ToDoDetailViewModel(todo);
+                vm.PropertyChanged += ToDoItem_PropertyChanged;
             }
         }
-       */
+
+        private void ToDoItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ToDo.IsCompleted) || e.PropertyName == nameof(ToDoDetailViewModel.Model))
+            {
+                NotifyPropertyChanged(nameof(ToDos));
+            }
+        }
+
         public int SelectedToDoId => SelectedToDo?.Model?.Id ?? 0;
 
         private bool isShowCompleted;
-        public bool IsShowCompleted { 
+        public bool IsShowCompleted
+        {
             get
             {
                 return isShowCompleted;
@@ -81,8 +105,6 @@ namespace Asana.Maui.ViewModels
                 }
             }
         }
-
-
 
         public void DeleteToDo()
         {

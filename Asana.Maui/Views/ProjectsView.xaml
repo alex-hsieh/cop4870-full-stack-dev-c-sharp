@@ -6,7 +6,7 @@
     <VerticalStackLayout>
         <ListView HeightRequest="400"
             ItemsSource="{Binding Projects}"
-            SelectedItem="{Binding SelectedProject}">
+            SelectedItem="{Binding SelectedProject, Mode=TwoWay}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

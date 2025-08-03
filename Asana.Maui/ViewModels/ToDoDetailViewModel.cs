@@ -1,45 +1,75 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Input;
-using Asana.Library.Models;
+﻿using Asana.Library.Models;
 using Asana.Library.Services;
-
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Asana.Maui.ViewModels
 {
-
-    public class ToDoDetailViewModel
+    public class ToDoDetailViewModel : INotifyPropertyChanged
     {
         public ToDoDetailViewModel()
         {
             Model = new ToDo();
+            SetProjectName(Model.ProjectId);
+            HookModel();
             DeleteCommand = new Command(DoDelete);
-            LoadProjects();
         }
 
-        public ToDoDetailViewModel(int id)
+        public ToDoDetailViewModel(int toDoId, int projectId)
         {
-            Model = ToDoServiceProxy.Current.GetById(id) ?? new ToDo();
+            Model = ToDoServiceProxy.Current.GetById(toDoId) ?? new ToDo { ProjectId = projectId };
+            SetProjectName(Model.ProjectId);
+            HookModel();
             DeleteCommand = new Command(DoDelete);
-            LoadProjects();
         }
 
         public ToDoDetailViewModel(ToDo? model)
         {
             Model = model ?? new ToDo();
+            SetProjectName(Model.ProjectId);
+            HookModel();
             DeleteCommand = new Command(DoDelete);
-            LoadProjects();
         }
 
-        private void LoadProjects()
+        private void SetProjectName(int? projectId)
         {
-            AvailableProjects = new List<Project>();
+            if (projectId.HasValue)
+            {
+                var project = ProjectServiceProxy.Current.GetById(projectId.Value);
+                ProjectName = project?.Name ?? "Unknown Project";
+            }
+            else
+            {
+                ProjectName = "No Project";
+            }
+            OnPropertyChanged(nameof(ProjectName));
+        }
 
-            
-            AvailableProjects.Add(new Project { Id = 0, Name = "No Project" });
+        private void HookModel()
+        {
+            if (Model != null)
+            {
+                Model.PropertyChanged -= Model_PropertyChanged;
+                Model.PropertyChanged += Model_PropertyChanged;
+            }
+        }
 
-            
-            AvailableProjects.AddRange(ProjectServiceProxy.Current.Projects);
+        private void Model_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ToDo.IsCompleted))
+            {
+                OnPropertyChanged(nameof(Model));
+                OnPropertyChanged(nameof(Model.IsCompleted));
+            }
+            if (e.PropertyName == nameof(ToDo.ProjectId))
+            {
+                SetProjectName(Model?.ProjectId);
+            }
         }
 
         public void DoDelete()
@@ -47,53 +77,25 @@ namespace Asana.Maui.ViewModels
             ToDoServiceProxy.Current.DeleteToDo(Model?.Id ?? 0);
         }
 
-        public ToDo? Model { get; set; }
-        public ICommand? DeleteCommand { get; set; }
-
-        
-        public List<Project> AvailableProjects { get; private set; } = new List<Project>();
-
-        public Project? SelectedProject
+        private ToDo? model;
+        public ToDo? Model
         {
-            get
-            {
-                if (Model?.ProjectId == null || Model.ProjectId == 0)
-                {
-                    
-                    return AvailableProjects.FirstOrDefault(p => p.Id == 0);
-                }
-                return AvailableProjects.FirstOrDefault(p => p.Id == Model.ProjectId);
-            }
+            get => model;
             set
             {
-                if (Model != null)
+                if (model != value)
                 {
-                    
-                    Model.ProjectId = (value?.Id == 0) ? null : value?.Id;
+                    if (model != null)
+                        model.PropertyChanged -= Model_PropertyChanged;
+                    model = value;
+                    HookModel();
+                    SetProjectName(model?.ProjectId);
+                    OnPropertyChanged(nameof(Model));
                 }
             }
         }
 
-        // Add this new constructor to support both ToDoId and ProjectId
-        public ToDoDetailViewModel(int toDoId, int projectId)
-        {
-            Model = ToDoServiceProxy.Current.GetById(toDoId) ?? new ToDo();
-            Model.ProjectId = projectId == 0 ? null : projectId;
-            DeleteCommand = new Command(DoDelete);
-            LoadProjects();
-        }
-
-        public string ProjectName
-        {
-            get
-            {
-                if (Model?.ProjectId == null || Model.ProjectId == 0)
-                    return "No Project";
-
-                var project = ProjectServiceProxy.Current.Projects.FirstOrDefault(p => p.Id == Model.ProjectId);
-                return project?.Name ?? "Unknown Project";
-            }
-        }
+        public ICommand? DeleteCommand { get; set; }
 
         public List<int> Priorities
         {
@@ -114,15 +116,24 @@ namespace Asana.Maui.ViewModels
                 if (Model != null && Model.Priority != value)
                 {
                     Model.Priority = value;
+                    OnPropertyChanged(nameof(SelectedPriority));
                 }
             }
+        }
+
+        public void AddOrUpdateToDo()
+        {
+            ToDoServiceProxy.Current.AddOrUpdate(Model);
         }
 
         public string PriorityDisplay
         {
             set
             {
-                if (Model == null) return;
+                if (Model == null)
+                {
+                    return;
+                }
 
                 if (!int.TryParse(value, out int p))
                 {
@@ -133,46 +144,31 @@ namespace Asana.Maui.ViewModels
                     Model.Priority = p;
                 }
             }
+
             get
             {
                 return Model?.Priority?.ToString() ?? string.Empty;
             }
         }
 
-        public DateTime? DueDate
+        private string projectName = string.Empty;
+        public string ProjectName
         {
-            get => Model?.DueDate;
+            get => projectName;
             set
             {
-                if (Model != null && Model.DueDate != value)
+                if (projectName != value)
                 {
-                    Model.DueDate = value;
+                    projectName = value;
+                    OnPropertyChanged(nameof(ProjectName));
                 }
             }
         }
 
-        public void AddOrUpdateToDo()
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
         {
-            ToDoServiceProxy.Current.AddOrUpdate(Model);
-
-            if (Model?.ProjectId != null && Model.ProjectId != 0)
-            {
-                var project = ProjectServiceProxy.Current.Projects.FirstOrDefault(p => p.Id == Model.ProjectId);
-                if (project != null && project.ToDosListP != null)
-                {
-                    // Update the ToDo in the project's list
-                    var todoInProject = project.ToDosListP.FirstOrDefault(t => t.Id == Model.Id);
-                    if (todoInProject != null)
-                    {
-                        todoInProject.IsCompleted = Model.IsCompleted;
-                    }
-
-                    // Recalculate completion percent
-                    int total = project.ToDosListP.Count;
-                    int completed = project.ToDosListP.Count(t => t.IsCompleted == true);
-                    project.CompletePercent = total > 0 ? (double)completed / total * 100 : 0;
-                }
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

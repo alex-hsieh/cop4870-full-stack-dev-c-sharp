@@ -2,21 +2,26 @@
 using Asana.Maui.Util;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Asana.Library.Services
 {
-    public class ProjectServiceProxy
+    public class ProjectServiceProxy : INotifyPropertyChanged
     {
-        private List<Project> projects;
-        public List<Project> Projects
+        private ObservableCollection<Project> projects;
+        public ObservableCollection<Project> Projects
         {
-            get
+            get => projects;
+            private set
             {
-                return projects;
+                if (projects != value)
+                {
+                    projects = value;
+                    OnPropertyChanged(nameof(Projects));
+                }
             }
         }
 
@@ -28,7 +33,8 @@ namespace Asana.Library.Services
         private void RefreshProjects()
         {
             var projectData = new WebRequestHandler().Get("/Project/Expand").Result;
-            projects = JsonConvert.DeserializeObject<List<Project>>(projectData) ?? new List<Project>();
+            var refreshed = JsonConvert.DeserializeObject<ObservableCollection<Project>>(projectData) ?? new ObservableCollection<Project>();
+            Projects = refreshed;
         }
 
         private static object _lock = new object();
@@ -44,7 +50,6 @@ namespace Asana.Library.Services
                         instance = new ProjectServiceProxy();
                     }
                 }
-
                 return instance;
             }
         }
@@ -53,9 +58,7 @@ namespace Asana.Library.Services
         public Project? AddOrUpdate(Project? project)
         {
             if (project == null)
-            {
                 return project;
-            }
 
             var isNewProject = project.Id == 0;
             var projectData = new WebRequestHandler().Post("/Project", project).Result;
@@ -65,18 +68,15 @@ namespace Asana.Library.Services
             {
                 if (!isNewProject)
                 {
-                    // Update existing project
                     var existingProject = projects.FirstOrDefault(p => p.Id == newProject.Id);
                     if (existingProject != null)
                     {
                         var index = projects.IndexOf(existingProject);
-                        projects.RemoveAt(index);
-                        projects.Insert(index, newProject);
+                        projects[index] = newProject;
                     }
                 }
                 else
                 {
-                    // Add new project
                     projects.Add(newProject);
                 }
             }
@@ -92,9 +92,7 @@ namespace Asana.Library.Services
         public void DeleteProject(int id)
         {
             if (id == 0)
-            {
                 return;
-            }
 
             var projectData = new WebRequestHandler().Delete($"/Project/{id}").Result;
             var projectToDelete = JsonConvert.DeserializeObject<Project>(projectData);
@@ -113,5 +111,9 @@ namespace Asana.Library.Services
         {
             RefreshProjects();
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

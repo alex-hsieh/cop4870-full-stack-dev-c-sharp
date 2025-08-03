@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Asana.Library.Models;
+using Asana.Library.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Asana.Library.Models;
-using Asana.Library.Services;
+using Asana.Maui.ViewModels;
 
 namespace Asana.Maui.ViewModels
 {
@@ -15,37 +11,62 @@ namespace Asana.Maui.ViewModels
     {
         public ObservableCollection<ProjectDetailViewModel> Projects { get; set; }
 
-        public ProjectDetailViewModel? SelectedProject { get; set; }
-        public int SelectedProjectId => SelectedProject?.Model?.Id ?? 0;
+        private ProjectDetailViewModel? selectedProject;
+        public ProjectDetailViewModel? SelectedProject
+        {
+            get => selectedProject;
+            set
+            {
+                if (selectedProject != value)
+                {
+                    selectedProject = value;
+                    OnPropertyChanged(nameof(SelectedProject));
+                }
+            }
+        }
 
         public ProjectsPageViewModel()
         {
-            RefreshProjects();
+            Projects = new ObservableCollection<ProjectDetailViewModel>(
+                ProjectServiceProxy.Current.Projects.Select(p => new ProjectDetailViewModel(p))
+            );
+
+            // Subscribe to ToDosChanged event
+            ToDoServiceProxy.Current.ToDosChanged += OnToDosChanged;
+        }
+
+        public ProjectsPageViewModel(Project project)
+        {
+            Projects = new ObservableCollection<ProjectDetailViewModel>
+            {
+                new ProjectDetailViewModel(project)
+            };
+
+            ToDoServiceProxy.Current.ToDosChanged += OnToDosChanged;
+        }
+
+        private void OnToDosChanged()
+        {
+            // Ensure the latest project data is loaded before refreshing
+            ProjectServiceProxy.Current.Refresh();
+
+            // Rebuild the Projects collection to reflect latest ToDo/project state
+            Projects.Clear();
+            foreach (var p in ProjectServiceProxy.Current.Projects)
+                Projects.Add(new ProjectDetailViewModel(p));
+            OnPropertyChanged(nameof(Projects));
         }
 
         public void RefreshProjects()
         {
-            // Refresh data from server first
-            ProjectServiceProxy.Current.Refresh();
-
-            Projects = new ObservableCollection<ProjectDetailViewModel>(
-                ProjectServiceProxy.Current.Projects.Select(p => new ProjectDetailViewModel(p)));
-            NotifyPropertyChanged(nameof(Projects));
-        }
-
-        public void DeleteProject()
-        {
-            if (SelectedProject?.Model?.Id != null && SelectedProject.Model.Id > 0)
-            {
-                ProjectServiceProxy.Current.DeleteProject(SelectedProject.Model.Id);
-                RefreshProjects(); // Refresh the list after deletion
-            }
+            Projects.Clear();
+            foreach (var p in ProjectServiceProxy.Current.Projects)
+                Projects.Add(new ProjectDetailViewModel(p));
+            OnPropertyChanged(nameof(Projects));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
+        protected void OnPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }
