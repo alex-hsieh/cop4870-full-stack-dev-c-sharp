@@ -6,7 +6,7 @@ not to be confused with the actaul asana
 the application should include two model classes with the following specifications:
 - ToDo logic: Id , Name , Description , Priority , IsComplete , ProjectId
 - Project logic , Id , Name , Description , CompletePercent , ToDos
-The application should allow the user with the following menu options:
+- The application should allow the user with the following menu options:
 - Create a ToDo
 - Delete a ToDo
 - Update a ToDo
