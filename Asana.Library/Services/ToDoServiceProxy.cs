@@ -12,19 +12,24 @@ namespace Asana.Library.Services
     public class ToDoServiceProxy
     {
         private List<ToDo> _toDoList;
-        public List<ToDo> ToDos { 
+        public List<ToDo> ToDos
+        {
             get
             {
                 return _toDoList.ToList();
             }
 
-            private set {
+            private set
+            {
                 if (value != _toDoList)
                 {
                     _toDoList = value;
                 }
             }
         }
+
+        // Event to notify when ToDos change
+        public event Action? ToDosChanged;
 
         private ToDoServiceProxy()
         {
@@ -38,7 +43,7 @@ namespace Asana.Library.Services
         {
             get
             {
-                if(instance == null)
+                if (instance == null)
                 {
                     instance = new ToDoServiceProxy();
                 }
@@ -48,7 +53,7 @@ namespace Asana.Library.Services
         }
         public ToDo? AddOrUpdate(ToDo? toDo)
         {
-            if(toDo == null)
+            if (toDo == null)
             {
                 return toDo;
             }
@@ -58,21 +63,23 @@ namespace Asana.Library.Services
 
             if (newToDo != null)
             {
-                if(!isNewToDo)
+                if (!isNewToDo)
                 {
                     var existingToDo = _toDoList.FirstOrDefault(t => t.Id == newToDo.Id);
-                    if(existingToDo != null)
+                    if (existingToDo != null)
                     {
                         var index = _toDoList.IndexOf(existingToDo);
                         _toDoList.RemoveAt(index);
                         _toDoList.Insert(index, newToDo);
                     }
 
-                } else
+                }
+                else
                 {
                     _toDoList.Add(newToDo);
                 }
-
+                // Notify listeners
+                ToDosChanged?.Invoke();
             }
 
             return toDo;
@@ -105,16 +112,16 @@ namespace Asana.Library.Services
             }
             var todoData = new WebRequestHandler().Delete($"/ToDo/{id}").Result;
             var toDoToDelete = JsonConvert.DeserializeObject<ToDo>(todoData);
-            if(toDoToDelete != null)
+            if (toDoToDelete != null)
             {
                 var localToDo = _toDoList.FirstOrDefault(t => t.Id == toDoToDelete.Id);
-                if(localToDo != null)
+                if (localToDo != null)
                 {
                     _toDoList.Remove(localToDo);
+                    // Notify listeners
+                    ToDosChanged?.Invoke();
                 }
             }
-
         }
-
     }
 }

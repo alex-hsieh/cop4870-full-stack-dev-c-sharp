@@ -1,3 +1,4 @@
+using Asana.Library.Services;
 using Asana.Maui.ViewModels;
 
 namespace Asana.Maui.Views;
@@ -32,7 +33,7 @@ public partial class ProjectsView : ContentPage
 
     private void EditClicked(object sender, EventArgs e)
     {
-        var selectedId = _viewModel.SelectedProjectId;
+        var selectedId = _viewModel.SelectedProject?.Model?.Id ?? 0;
         if (selectedId > 0)
         {
             Shell.Current.GoToAsync($"//ProjectDetails?ProjectId={selectedId}");
@@ -41,6 +42,10 @@ public partial class ProjectsView : ContentPage
 
     private void DeleteClicked(object sender, EventArgs e)
     {
-        _viewModel.DeleteProject();
+        if (_viewModel.SelectedProject?.Model?.Id > 0)
+        {
+            ProjectServiceProxy.Current.DeleteProject(_viewModel.SelectedProject.Model.Id);
+            _viewModel.RefreshProjects();
+        }
     }
 }
