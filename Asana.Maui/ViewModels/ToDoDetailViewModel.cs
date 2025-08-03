@@ -87,14 +87,14 @@ namespace Asana.Maui.ViewModels
 
         private void SetProjectName(int? projectId)
         {
-            if (projectId.HasValue)
+            if (!projectId.HasValue || projectId.Value == 0)
             {
-                var project = ProjectServiceProxy.Current.GetById(projectId.Value);
-                ProjectName = project?.Name ?? "Unknown Project";
+                ProjectName = "No Project";
             }
             else
             {
-                ProjectName = "No Project";
+                var project = ProjectServiceProxy.Current.GetById(projectId.Value);
+                ProjectName = project?.Name ?? "Unknown Project";
             }
             OnPropertyChanged(nameof(ProjectName));
         }
