@@ -1,4 +1,4 @@
-﻿using Asana.API.Database;
+﻿using Api.ToDoApplication.Persistence;
 using Asana.Library.Models;
 
 namespace Asana.API.Enterprise
@@ -7,23 +7,25 @@ namespace Asana.API.Enterprise
     {
         public IEnumerable<Project>? Get(bool Expand = false)
         {
-            //return FakeDatabase.Current.Projects.Take(100);
-            return FakeDatabase.Current.GetProjects(Expand)?.Take(100);
+            // You need to implement GetProjects in Filebase for this to work
+            return Filebase.Current.GetProjects(Expand)?.Take(100);
         }
 
         public Project? GetById(int id)
         {
-            return FakeDatabase.Current.GetProjects(true)?.FirstOrDefault(p => p.Id == id);
+            // You need to implement GetProjects in Filebase for this to work
+            return Filebase.Current.GetProjects(true)?.FirstOrDefault(p => p.Id == id);
         }
 
         public Project? AddOrUpdate(Project? project)
         {
-            if(project == null)
+            if (project == null)
             {
                 return project;
             }
 
-            FakeDatabase.Current.AddOrUpdateProject(project);
+            // You need to implement AddOrUpdateProject in Filebase for this to work
+            Filebase.Current.AddOrUpdateProject(project);
             return project;
         }
 
@@ -32,7 +34,8 @@ namespace Asana.API.Enterprise
             var projectToDelete = GetById(id);
             if (projectToDelete != null)
             {
-                FakeDatabase.Current.DeleteProject(projectToDelete);
+                // You need to implement DeleteProject in Filebase for this to work
+                Filebase.Current.DeleteProject(projectToDelete);
             }
             return projectToDelete;
         }
