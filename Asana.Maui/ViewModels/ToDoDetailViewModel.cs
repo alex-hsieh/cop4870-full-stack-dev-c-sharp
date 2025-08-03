@@ -172,6 +172,19 @@ namespace Asana.Maui.ViewModels
             }
         }
 
+        public DateTime DueDate
+        {
+            get => Model?.DueDate ?? DateTime.Today;
+            set
+            {
+                if (Model != null && Model.DueDate != value)
+                {
+                    Model.DueDate = value;
+                    OnPropertyChanged(nameof(DueDate));
+                }
+            }
+        }
+
         public void AddOrUpdateToDo()
         {
             ToDoServiceProxy.Current.AddOrUpdate(Model);
