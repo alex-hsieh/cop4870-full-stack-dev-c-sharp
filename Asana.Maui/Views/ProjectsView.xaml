@@ -3,8 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Asana.Maui.Views.ProjectsView"
              Title="ProjectsView, BABY!!!!">
-    <VerticalStackLayout>
-        <ListView HeightRequest="400"
+    <Grid Padding="20" RowSpacing="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <!-- Project List -->
+            <RowDefinition Height="Auto"/>
+            <!-- Button Bar -->
+        </Grid.RowDefinitions>
+
+        <!-- Project List (scrollable, fills available space) -->
+        <ListView
+            Grid.Row="0"
             ItemsSource="{Binding Projects}"
             SelectedItem="{Binding SelectedProject, Mode=TwoWay}">
             <ListView.ItemTemplate>
@@ -31,9 +40,13 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button Text="Add Project" Clicked="AddClicked"/>
-        <Button Text="Edit Project" Clicked="EditClicked"/>
-        <Button Text="Delete Project" Clicked="DeleteClicked" BackgroundColor="IndianRed"/>
-        <Button Text="Cancel" Clicked="CancelClicked"/>
-    </VerticalStackLayout>
+
+        <!-- Button Bar (always visible at bottom) -->
+        <VerticalStackLayout Grid.Row="1" Spacing="8">
+            <Button Text="Add Project" Clicked="AddClicked"/>
+            <Button Text="Edit Project" Clicked="EditClicked"/>
+            <Button Text="Delete Project" Clicked="DeleteClicked" BackgroundColor="IndianRed"/>
+            <Button Text="Cancel" Clicked="CancelClicked"/>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>

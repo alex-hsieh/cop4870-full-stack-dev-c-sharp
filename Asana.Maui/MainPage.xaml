@@ -5,83 +5,77 @@
              NavigatedTo="ContentPage_NavigatedTo"
              NavigatedFrom="ContentPage_NavigatedFrom">
 
-    <VerticalStackLayout
-        Padding="30,0"
-        Spacing="25">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition Height="10*"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <!-- Tool Bar ,-->
-            <Grid Grid.Row="0">
+    <Grid Padding="30,0" RowSpacing="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Toolbar -->
+            <RowDefinition Height="*"/>
+            <!-- ToDo List (fills available space) -->
+            <RowDefinition Height="Auto"/>
+            <!-- Button Bar (always visible) -->
+        </Grid.RowDefinitions>
+
+        <!-- Tool Bar -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Text="Show Completed Tasks:"/>
+            <CheckBox Margin="5" Grid.Column="1" IsChecked="{Binding IsShowCompleted}"/>
+            <Grid Grid.Column="2">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="6*"/>
                     <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="5*"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Text="Show Completed Tasks:"/>
-                <CheckBox Margin="5" Grid.Column="1" IsChecked="{Binding IsShowCompleted}"/>
-                <Grid Grid.Column="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="6*"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Entry Grid.Column="0" Text="{Binding Query}"/>
-                    <Button Grid.Column="1" Text="Search" Clicked="SearchClicked"/>
-                </Grid>
+                <Entry Grid.Column="0" Text="{Binding Query}"/>
+                <Button Grid.Column="1" Text="Search" Clicked="SearchClicked"/>
             </Grid>
-            <!-- ToDo List-->
-            <ScrollView Grid.Row="1">
-                <VerticalStackLayout>
-                    <ListView
-                    Grid.Row="1"
-                    ItemsSource="{Binding ToDos}"
-                    SelectedItem="{Binding SelectedToDo}"
-                    >
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition Width="10*"/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <CheckBox IsChecked="{Binding Model.IsCompleted, Mode=TwoWay}" Grid.Column="0"/>
-
-                                        <Grid Grid.Column="1">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition/>
-                                                <RowDefinition/>
-                                                <RowDefinition/>
-                                                <RowDefinition/>
-                                            </Grid.RowDefinitions>
-                                            <Label TextColor="Fuchsia" Grid.Row="0" FontSize="Medium" Text="{Binding Model.Name}"/>
-                                            <Label Grid.Row="1" FontSize="Small" Text="{Binding Model.Description}"/>
-                                            <Label Grid.Row="2" Text=" Linked to:" FontAttributes="Italic"/>
-                                            <Label Grid.Row="4" Grid.Column="2"  Text="{Binding ProjectName}"
-                                                   FontSize="Micro" TextColor="Coral"/>
-                                        </Grid>
-
-                                        <Button Grid.Column="4" BackgroundColor="IndianRed" Text="Delete" Clicked="InLineDeleteClicked" Command="{Binding DeleteCommand}"/>
-                                    </Grid>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </VerticalStackLayout>
-            </ScrollView>
-            <!-- Button Bar -->
-            <VerticalStackLayout Grid.Row="2">
-                <Button Text="Add New ToDo" Clicked="AddNewClicked" BackgroundColor="Coral"/>
-                <Button Text="Edit Selected ToDo" Clicked="EditClicked" BackgroundColor="Coral"/>
-                <Button Text="Manage Projects" Clicked="ProjectClicked" BackgroundColor="Gold"/>
-            </VerticalStackLayout>
         </Grid>
-    </VerticalStackLayout>
 
+        <!-- ToDo List (scrollable, fills available space) -->
+        <ListView
+            Grid.Row="1"
+            ItemsSource="{Binding ToDos}"
+            SelectedItem="{Binding SelectedToDo}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="10*"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox IsChecked="{Binding Model.IsCompleted, Mode=TwoWay}" Grid.Column="0"/>
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Label TextColor="Fuchsia" Grid.Row="0" FontSize="Medium" Text="{Binding Model.Name}"/>
+                                <Label Grid.Row="1" FontSize="Small" Text="{Binding Model.Description}"/>
+                                <Label Grid.Row="2" Text=" Linked to:" FontAttributes="Italic"/>
+                                <Label Grid.Row="4" Grid.Column="2"  Text="{Binding ProjectName}"
+                                       FontSize="Micro" TextColor="Coral"/>
+                            </Grid>
+                            <Button Grid.Column="4" BackgroundColor="IndianRed" Text="Delete" Clicked="InLineDeleteClicked" Command="{Binding DeleteCommand}"/>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!-- Button Bar (always visible at bottom) -->
+        <VerticalStackLayout Grid.Row="2">
+            <Button Text="Add New ToDo" Clicked="AddNewClicked" BackgroundColor="Coral"/>
+            <Button Text="Edit Selected ToDo" Clicked="EditClicked" BackgroundColor="Coral"/>
+            <Button Text="Manage Projects" Clicked="ProjectClicked" BackgroundColor="Gold"/>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>
