@@ -40,9 +40,13 @@ namespace Asana.Maui.ViewModels
             {
                 var toDos = _toDoSvc.ToDos.Where(t => (t?.Name?.Contains(Query) ?? false) || (t?.Description?.Contains(Query) ?? false))
                         .Select(t => new ToDoDetailViewModel(t));
-                if (!IsShowCompleted)
+                if (IsShowCompleted)
                 {
-                    toDos = toDos.Where(t => !t?.Model?.IsCompleted ?? false);
+                    toDos = toDos.Where(t => t?.Model?.IsCompleted ?? false);
+                }
+                else
+                {
+                    toDos = toDos.Where(t => !(t?.Model?.IsCompleted ?? false));
                 }
                 return new ObservableCollection<ToDoDetailViewModel>(toDos);
             }
