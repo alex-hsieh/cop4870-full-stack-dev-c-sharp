@@ -107,18 +107,30 @@ namespace Asana.Library.Services
         public void DeleteToDo(int id)
         {
             if (id == 0)
-            {
                 return;
-            }
+
             var todoData = new WebRequestHandler().Delete($"/ToDo/{id}").Result;
-            var toDoToDelete = JsonConvert.DeserializeObject<ToDo>(todoData);
-            if (toDoToDelete != null)
+
+            if (!string.IsNullOrWhiteSpace(todoData) && !todoData.StartsWith("ERROR", StringComparison.OrdinalIgnoreCase))
             {
-                var localToDo = _toDoList.FirstOrDefault(t => t.Id == toDoToDelete.Id);
+                var toDoToDelete = JsonConvert.DeserializeObject<ToDo>(todoData);
+                if (toDoToDelete != null)
+                {
+                    var localToDo = _toDoList.FirstOrDefault(t => t.Id == toDoToDelete.Id);
+                    if (localToDo != null)
+                    {
+                        _toDoList.Remove(localToDo);
+                        ToDosChanged?.Invoke();
+                    }
+                }
+            }
+            else
+            {
+                // Fallback: remove by ID if no object is returned
+                var localToDo = _toDoList.FirstOrDefault(t => t.Id == id);
                 if (localToDo != null)
                 {
                     _toDoList.Remove(localToDo);
-                    // Notify listeners
                     ToDosChanged?.Invoke();
                 }
             }

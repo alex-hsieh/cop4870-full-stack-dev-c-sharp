@@ -24,17 +24,18 @@ namespace Library.eCommerce.Utilities
                 using (var client = new HttpClient())
                 {
                     var response = await client
-                        .GetStringAsync(fullUrl)
+                        .GetAsync(fullUrl)
                         .ConfigureAwait(false);
-                    return response;
+
+                    response.EnsureSuccessStatusCode();
+                    return await response.Content.ReadAsStringAsync();
                 }
-            } catch(Exception e)
-            {
-
             }
-
-
-            return null;
+            catch (Exception ex)
+            {
+                // Optionally log the exception here
+                throw new HttpRequestException("GET request failed.", ex);
+            }
         }
 
         public async Task<string> Delete(string url)
@@ -43,29 +44,23 @@ namespace Library.eCommerce.Utilities
             try
             {
                 using (var client = new HttpClient())
+                using (var request = new HttpRequestMessage(HttpMethod.Delete, fullUrl))
+                using (var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
                 {
-                    using (var request = new HttpRequestMessage(HttpMethod.Delete, fullUrl))
+                    if (!response.IsSuccessStatusCode)
                     {
-                        using (var response = await client
-                                .SendAsync(request, HttpCompletionOption.ResponseHeadersRead)
-                                .ConfigureAwait(false))
-                        {
-                            if (response.IsSuccessStatusCode)
-                            {
-                                return await response.Content.ReadAsStringAsync();
-                            }
-                            return "ERROR";
-                        }
+                        throw new HttpRequestException($"Delete failed: {response.StatusCode} - {response.ReasonPhrase}");
                     }
+                    return response.Content != null
+                        ? await response.Content.ReadAsStringAsync()
+                        : string.Empty;
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-
+                // Optionally log the exception
+                throw new HttpRequestException("Delete request failed.", ex);
             }
-
-
-            return null;
         }
 
         public async Task<string> Post(string url, object obj)
