@@ -46,6 +46,8 @@ namespace Asana.Maui.ViewModels
             {
                 var toDos = _toDoSvc.ToDos
                     .Where(t => (t?.Name?.Contains(Query) ?? false) || (t?.Description?.Contains(Query) ?? false))
+                    // Order by Priority (nulls last, lowest value first)
+                    .OrderBy(t => t.Priority ?? int.MaxValue)
                     .Select(t => new ToDoDetailViewModel(t))
                     .ToList();
 
