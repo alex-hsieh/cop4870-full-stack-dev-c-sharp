@@ -52,7 +52,7 @@ namespace Asana.Maui.ViewModels
         private async void OnAddToDo()
         {
             if (Model?.Id > 0)
-                await Shell.Current.GoToAsync($"///ToDoDetails?toDoId={Model.Id}&projectId={Model.Id}");
+                await Shell.Current.GoToAsync($"///ToDoDetails?toDoId=0&projectId={Model.Id}");
             else
                 await Shell.Current.DisplayAlert("Error", "Please save the project before adding ToDos.", "OK");
         }
