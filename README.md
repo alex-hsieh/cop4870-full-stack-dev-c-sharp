@@ -1,6 +1,8 @@
 # AsanaClone for class
 not to be confused with the actaul asana
 ## full stack dev project for class:)
+# FORGOT TO UPDATE THE LINK TO THE VIDEO, BUT HERE IT IS!! 
+https://fsu-my.sharepoint.com/:f:/g/personal/ach22h_fsu_edu/ErhEpM_o_M5FqkexJXxX1ZkBhjyxzVivR73tf_q0Pttppw?e=aBnoko
 
 ### asg1 
 the application should include two model classes with the following specifications:
