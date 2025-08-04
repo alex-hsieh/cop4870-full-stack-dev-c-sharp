@@ -13,6 +13,7 @@ namespace Asana.Library.Models
         {
             Id = 0;
             IsCompleted = false;
+            DueDate = DateTime.Today;
         }
         public string? Name { get; set; }
         public string? Description { get; set; }

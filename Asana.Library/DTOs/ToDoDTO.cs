@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 
 namespace Asana.Library.DTOs
 {
@@ -14,6 +15,7 @@ namespace Asana.Library.DTOs
         public bool? IsCompleted { get; set; }
 
         public int? ProjectId { get; set; }
+        public DateTime? DueDate { get; set; }  
 
         public int Id { get; set; }
 
@@ -25,6 +27,7 @@ namespace Asana.Library.DTOs
             Priority = td.Priority;
             IsCompleted = td.IsCompleted;
             ProjectId = td.ProjectId;
+            DueDate = td.DueDate;
         }
     }
 }
